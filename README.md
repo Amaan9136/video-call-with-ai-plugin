@@ -55,8 +55,6 @@
 
 ## Contact
 
-Instagram - [@Instagram](https://www.instagram.com/ckalgos/) - ckalgos@gmail.com
+Instagram - [@Instagram](https://www.instagram.com/amaan.m.k/) - syedkhalander66@gmail.com 
 
-Twitter - [@Twitter](https://twitter.com/AlgosCk)
-
-Project Link: [https://github.com/ckalgos/google-meet-clone](https://github.com/ckalgos/google-meet-clone)
+Project Link: [https://github.com/Amaan9136/video-call-using-ai](https://github.com/Amaan9136/video-call-using-ai)
