@@ -1,12 +1,12 @@
-# Google-Meet-Clone
+# Video-Call-React-and-Python
 
 <p align="center"> 
-  <h3 align="center">Google Meet Clone</h3>
+  <h3 align="center">Video-Call-React-and-Python</h3>
 
   <p align="center">
     Google Meet Clone!
     <br />  
-     A Video Conference App Similar to Google Meet
+     A Video Conference App Similar to Google Meet and Zoom
     <br />
   </p>
 </p>
