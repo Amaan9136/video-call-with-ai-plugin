@@ -4,10 +4,7 @@
   <h3 align="center">Video-Call-React-and-Python</h3>
 
   <p align="center">
-    Google Meet Clone!
-    <br />  
      A Video Conference App Similar to Google Meet and Zoom
-    <br />
   </p>
 </p>
 
