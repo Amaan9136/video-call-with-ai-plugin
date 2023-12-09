@@ -1,0 +1,98 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-left: 30px;
+  padding-right: 30px;
+  .body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .left-side {
+      .content {
+        h2 {
+          font-size: 44px;
+          font-weight: 400;
+          margin-left: 20px;
+        }
+        p {
+          font-size: 18px;
+          font-weight: 300;
+          margin-left: 20px;
+        }
+        .action-btn {
+          margin-top: 40px;
+          display: flex;
+          .btn {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            padding: 8px;
+            border: none;
+            outline: none;
+            background: none;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #19524b;
+            .icon-block {
+              padding-right: 10px;
+            }
+            &:hover {
+              box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+            }
+          }
+          .input-block {
+            margin-left: 20px;
+            .input-section {
+              position: relative;
+              margin-right: 10px;
+              .icon-block {
+                position: absolute;
+                top: 50%;
+                transform: translate(10px, -50%);
+                color: #5f6368;
+              }
+              input {
+                font-size: 1.2rem;
+                font-weight: 400;
+                padding: 0.6rem;
+                border: 3px solid #19524b;
+                color: black;
+                border-radius: 5px;
+                padding-left: 2rem;
+                box-sizing: border-box;
+                outline: none;
+              }
+            }
+          }
+        }
+      }
+      .help-text {
+        margin: 30px;
+        padding-top: 25px;
+        border-top: 1px solid #ddd;
+        a {
+          text-decoration: none;
+          color: #509d94;
+        }
+      }
+    }
+    .right-side {
+      .content {
+        border: 2px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 45rem;
+        box-sizing: border-box;
+        box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302),
+          0 2px 6px 2px rgba(60, 64, 67, 0.149);
+        img {
+          border-radius: 5px;
+        }
+      }
+    }
+  }
+}

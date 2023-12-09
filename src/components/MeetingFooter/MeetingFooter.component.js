@@ -6,6 +6,8 @@ import {
   faDesktop,
   faVideoSlash,
   faMicrophoneSlash,
+  faLink,
+  faLinkSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import "./MeetingFooter.css";
@@ -52,7 +54,7 @@ const MeetingFooter = (props) => {
     props.onVideoClick(streamState.video);
   }, [streamState.video]);
   return (
-    <div className="meeting-footer">
+    <div className="meeting-footer border-t">
       <div
         className={"meeting-icons " + (!streamState.mic ? "active" : "")}
         data-tip={streamState.mic ? "Mute Audio" : "Unmute Audio"}
@@ -77,6 +79,14 @@ const MeetingFooter = (props) => {
         disabled={streamState.screen}
       >
         <FontAwesomeIcon icon={faDesktop} />
+      </div>
+      <div
+        className={"meeting-icons " + (props.meetingInfo ? "" : "active")}
+        data-tip="Link Info"
+        onClick={() => props.setMeetingInfo(prev => !prev)}
+        disabled={streamState.screen}
+      >
+        <FontAwesomeIcon icon={props.meetingInfo ? faLink : faLinkSlash} />
       </div>
       <ReactTooltip />
     </div>

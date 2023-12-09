@@ -24,7 +24,7 @@ function Meet(props) {
   };
 
   useEffect(() => {
-    let isSubscribed = true; // Flag to track component unmounting
+    let isSubscribed = true;
 
     const fetchData = async () => {
       try {
@@ -94,7 +94,7 @@ function Meet(props) {
 
   return (
     <div className="Meet">
-      <MainScreen />
+      <MainScreen name={name}/>
     </div>
   );
 }
@@ -112,6 +112,6 @@ const mapDispatchToProps = {
   setUser,
   removeParticipant,
   updateParticipant,
-};
+}; 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meet);

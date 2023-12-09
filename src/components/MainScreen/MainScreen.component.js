@@ -1,13 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import MeetingFooter from "../MeetingFooter/MeetingFooter.component";
 import Participants from "../Participants/Participants.component";
 import "./MainScreen.css";
 import { connect } from "react-redux";
 import { setMainStream, updateUser } from "../../store/actioncreator";
+import MeetingInfo from "../MeetingInfo/MeetingInfo";
 
 const MainScreen = (props) => {
   const participantRef = useRef(props.participants);
-
+  const [meetingInfo, setMeetingInfo] = useState(false);
   const onMicClick = (micEnabled) => {
     if (props.stream) {
       props.stream.getAudioTracks()[0].enabled = micEnabled;
@@ -72,16 +73,20 @@ const MainScreen = (props) => {
 
     props.updateUser({ screen: true });
   };
+
   return (
     <div className="wrapper">
-      <div className="main-screen">
+      <div className="main-screen ">
         <Participants />
+        {meetingInfo&&<MeetingInfo setMeetingInfo={setMeetingInfo} name={props.name}/>}
       </div>
       <div className="footer">
         <MeetingFooter
           onScreenClick={onScreenClick}
           onMicClick={onMicClick}
           onVideoClick={onVideoClick}
+          meetingInfo={meetingInfo}
+          setMeetingInfo={setMeetingInfo}
         />
       </div>
     </div>
