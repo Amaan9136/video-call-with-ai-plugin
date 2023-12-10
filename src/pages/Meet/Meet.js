@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect,useContext } from "react";
 import { connect } from "react-redux";
 import MainScreen from "../../components/MainScreen/MainScreen.component";
 import firepadRef, { db } from "../../server/firebase";
+import { AppContext, Loader } from '../../AppContext';
+
 import {
   addParticipant,
   removeParticipant,
@@ -12,8 +14,27 @@ import {
 import "./Meet.css";
 
 function Meet(props) {
-  const { name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant } = props;
+  const { appState, setAppState } = useContext(AppContext);
 
+  useEffect(() => {
+    setAppState((prevAppState) => ({
+      ...prevAppState,
+      loaderShow: true,
+    }));
+  
+    const loaderTimeout = setTimeout(() => {
+      setAppState((prevAppState) => ({
+        ...prevAppState,
+        loaderShow: false,
+      }));
+    }, 1500);
+  
+    return () => {
+      clearTimeout(loaderTimeout);
+    };
+  }, []);
+
+  const { name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant } = props;
   const getUserStream = async () => {
     const localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -87,14 +108,18 @@ function Meet(props) {
     fetchData();
 
     return () => {
-      // Cleanup function to unsubscribe when component unmounts
+      
       isSubscribed = false;
     };
   }, [name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant]);
 
   return (
     <div className="Meet">
-      <MainScreen name={name}/>
+      {appState.loaderShow ? ( 
+        <Loader message={"Arranging Meeting..."} />
+      ) : (
+        <MainScreen name={name} />
+      )}
     </div>
   );
 }

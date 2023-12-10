@@ -86,7 +86,7 @@ const MainScreen = (props) => {
             <Participants />
             {meetingState.meetingInfo && <MeetingInfo setMeetingState={setMeetingState} name={props.name} />}
           </div>
-          {meetingState.transcription && <Transcription setMeetingState={setMeetingState} meetingState={meetingState}/>}
+          {meetingState.transcription && <Transcription setMeetingState={setMeetingState}/>}
         </div>
         <div className="footer">
           <MeetingFooter

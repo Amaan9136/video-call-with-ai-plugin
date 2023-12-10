@@ -12,7 +12,7 @@ export default function Header({ children }) {
     <>
       <div className="header">
         <div className="logo">
-<p className='text-3xl'>AIT</p>
+<p className='text-3xl'>WeXpert</p>
           <span className="help-text mt-3">Meet</span>
         </div>
         <div className="action-btn">
@@ -32,7 +32,7 @@ export default function Header({ children }) {
             {children}
           </div>
           <div className="help-text">
-            <a href="">Learn more</a> about AIT-Meet
+            <a href="">Learn more</a> about WeXpert-Meet
           </div>
         </div>
         <div className="right-side">

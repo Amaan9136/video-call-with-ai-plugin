@@ -10,9 +10,12 @@ import {
   faLinkSlash,
   faAlignLeft,
   faSlash,
+  faCamera,
+  faPhone,
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import "./MeetingFooter.css";
+import { Link } from "react-router-dom";
 const MeetingFooter = (props) => {
   const [streamState, setStreamState] = useState({
     mic: true,
@@ -75,6 +78,20 @@ const MeetingFooter = (props) => {
         <FontAwesomeIcon icon={!streamState.video ? faVideoSlash : faVideo} />
       </div>
       <div
+        className={"meeting-icons"}
+        onClick={onVideoClick}
+      >
+        <FontAwesomeIcon icon={faCamera} />
+      </div>
+      <Link to='summary'>
+        <div
+          className={"meeting-icons active"}
+          onClick={onVideoClick}
+        >
+          <FontAwesomeIcon icon={faPhone} />
+        </div>
+      </Link>
+      <div
         className="meeting-icons"
         data-tip="Share Screen"
         onClick={onScreenClick}
@@ -99,31 +116,31 @@ const MeetingFooter = (props) => {
         />
       </div>
       <div className={"meeting-icons " + (props.meetingState.transcription ? "" : "active")}
-    data-tip="Link Info"
-    onClick={() =>
-      props.setMeetingState((prev) => ({
-        ...prev,
-        transcription: !prev.transcription,
-      }))
-    }
-    disabled={streamState.screen}
-  >
-    {props.meetingState.transcription ? (
-      <FontAwesomeIcon icon={faAlignLeft} />
-    ) : (
-      <>
-        <FontAwesomeIcon
-          icon={faSlash}
-          className="overlay-icon"
-          style={{ position: "absolute"}}
-        />
-        <FontAwesomeIcon
-          icon={faAlignLeft}
-          style={{ position: "relative"}}
-        />
-      </>
-    )}
-  </div>
+        data-tip="Link Info"
+        onClick={() =>
+          props.setMeetingState((prev) => ({
+            ...prev,
+            transcription: !prev.transcription,
+          }))
+        }
+        disabled={streamState.screen}
+      >
+        {props.meetingState.transcription ? (
+          <FontAwesomeIcon icon={faAlignLeft} />
+        ) : (
+          <>
+            <FontAwesomeIcon
+              icon={faSlash}
+              className="overlay-icon"
+              style={{ position: "absolute" }}
+            />
+            <FontAwesomeIcon
+              icon={faAlignLeft}
+              style={{ position: "relative" }}
+            />
+          </>
+        )}
+      </div>
       <ReactTooltip />
     </div>
   );

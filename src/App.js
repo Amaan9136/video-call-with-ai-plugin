@@ -4,7 +4,6 @@ import Meet from './pages/Meet/Meet';
 
 export default function App() {
   const [userName, setUserName] = useState(null);
-
   return (
     <>
       {userName ? (
