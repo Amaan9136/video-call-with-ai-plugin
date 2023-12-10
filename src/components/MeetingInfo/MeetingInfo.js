@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingInfo.scss";
 
-const MeetingInfo = ({ setMeetingInfo, name }) => {
+const MeetingInfo = ({ setMeetingState, name }) => {
   const url = window.location.href;
   return (
     <div className="meeting-info-block">
@@ -17,7 +17,7 @@ const MeetingInfo = ({ setMeetingInfo, name }) => {
           className="icon"
           icon={faTimes}
           onClick={() => {
-            setMeetingInfo(false);
+            setMeetingState(prevState => ({ ...prevState, MeetingInfo: false }));
           }}
         />
       </div>

@@ -8,6 +8,8 @@ import {
   faMicrophoneSlash,
   faLink,
   faLinkSlash,
+  faAlignLeft,
+  faSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import "./MeetingFooter.css";
@@ -80,14 +82,48 @@ const MeetingFooter = (props) => {
       >
         <FontAwesomeIcon icon={faDesktop} />
       </div>
-      <div
-        className={"meeting-icons " + (props.meetingInfo ? "" : "active")}
+      <div className={"meeting-icons " + (props.meetingState.meetingInfo ? "" : "active")}
         data-tip="Link Info"
-        onClick={() => props.setMeetingInfo(prev => !prev)}
+        onClick={() =>
+          props.setMeetingState((prev) => ({
+            ...prev,
+            meetingInfo: !prev.meetingInfo,
+          }))
+        }
         disabled={streamState.screen}
       >
-        <FontAwesomeIcon icon={props.meetingInfo ? faLink : faLinkSlash} />
+        <FontAwesomeIcon
+          icon={
+            props.meetingState.meetingInfo ? faLink : faLinkSlash
+          }
+        />
       </div>
+      <div className={"meeting-icons " + (props.meetingState.transcription ? "" : "active")}
+    data-tip="Link Info"
+    onClick={() =>
+      props.setMeetingState((prev) => ({
+        ...prev,
+        transcription: !prev.transcription,
+      }))
+    }
+    disabled={streamState.screen}
+  >
+    {props.meetingState.transcription ? (
+      <FontAwesomeIcon icon={faAlignLeft} />
+    ) : (
+      <>
+        <FontAwesomeIcon
+          icon={faSlash}
+          className="overlay-icon"
+          style={{ position: "absolute"}}
+        />
+        <FontAwesomeIcon
+          icon={faAlignLeft}
+          style={{ position: "relative"}}
+        />
+      </>
+    )}
+  </div>
       <ReactTooltip />
     </div>
   );

@@ -1,15 +1,13 @@
-import firebase from 'firebase/compat/app'; // Import Firebase
-import 'firebase/compat/database'; // Import Realtime Database
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
 
 var firebaseConfig = {
   apiKey: "AIzaSyAcvzFXEUPBpUe69uERDTpPh_zXGglmGwI", // Add API Key
   databaseURL:"https://vivid-alchemy-399203-default-rtdb.firebaseio.com/" // Add databaseURL
 };
-// Initialize Firebase
+
 firebase.initializeApp(firebaseConfig);
-
 export const db = firebase;
-
 var firepadRef = firebase.database().ref();
 
 const urlparams = new URLSearchParams(window.location.search);

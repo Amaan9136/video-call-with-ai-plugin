@@ -1,24 +1,61 @@
-import React from "react";
+import React, { Suspense, StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { userReducer } from "./store/reducer";
+import AppContextProvider from "./AppContext";
+import { SyncLoader } from 'react-spinners';
+import reportWebVitals from "./reportWebVitals";
 
 export const store = createStore(userReducer);
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+const Loader = () => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+    }}
+  >
+    <SyncLoader color="white" />
+  </div>
 );
 
-// If you want to start measuring performance in your App, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+const routes = [
+  {
+    path: "/",
+    component: React.lazy(() => import("./App")),
+  },
+  {
+    path: "/summary",
+    component: React.lazy(() => import("./pages/Summary/Summary")),
+  },
+];
+
+const Root = () => (
+  <Router>
+    <Provider store={store}>
+      <AppContextProvider>
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            {routes.map(({ path, component: Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          </Routes>
+        </Suspense>
+      </AppContextProvider>
+    </Provider>
+  </Router>
+);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <StrictMode>
+    <Root />
+  </StrictMode>
+);
+
 reportWebVitals();

@@ -5,10 +5,14 @@ import "./MainScreen.css";
 import { connect } from "react-redux";
 import { setMainStream, updateUser } from "../../store/actioncreator";
 import MeetingInfo from "../MeetingInfo/MeetingInfo";
+import Transcription from "../Transcription/Transcription";
 
 const MainScreen = (props) => {
   const participantRef = useRef(props.participants);
-  const [meetingInfo, setMeetingInfo] = useState(false);
+  const [meetingState, setMeetingState] = useState({
+    meetingInfo:false,
+    transcription:true,
+  });
   const onMicClick = (micEnabled) => {
     if (props.stream) {
       props.stream.getAudioTracks()[0].enabled = micEnabled;
@@ -75,21 +79,26 @@ const MainScreen = (props) => {
   };
 
   return (
-    <div className="wrapper">
-      <div className="main-screen ">
-        <Participants />
-        {meetingInfo&&<MeetingInfo setMeetingInfo={setMeetingInfo} name={props.name}/>}
+    <>
+      <div className="wrapper">
+        <div className="main-screen flex">
+          <div className="flex-1">
+            <Participants />
+            {meetingState.meetingInfo && <MeetingInfo setMeetingState={setMeetingState} name={props.name} />}
+          </div>
+          {meetingState.transcription && <Transcription setMeetingState={setMeetingState} meetingState={meetingState}/>}
+        </div>
+        <div className="footer">
+          <MeetingFooter
+            onScreenClick={onScreenClick}
+            onMicClick={onMicClick}
+            onVideoClick={onVideoClick}
+            meetingState={meetingState}
+            setMeetingState={setMeetingState}
+          />
+        </div>
       </div>
-      <div className="footer">
-        <MeetingFooter
-          onScreenClick={onScreenClick}
-          onMicClick={onMicClick}
-          onVideoClick={onVideoClick}
-          meetingInfo={meetingInfo}
-          setMeetingInfo={setMeetingInfo}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 
