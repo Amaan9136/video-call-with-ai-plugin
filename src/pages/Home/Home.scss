@@ -100,6 +100,7 @@
 
 /* Dark Theme for Calendar */
 
+/* Calendar container */
 .react-calendar {
   max-width: 400px;
   background: #333333; /* Dark background */
@@ -110,38 +111,62 @@
   color: #ffffff; /* White text */
 }
 
+/* Navigation container */
 .react-calendar__navigation {
   background: #222222; /* Slightly lighter background */
   border-bottom: 1px solid #444444; /* Slightly lighter border */
   padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+/* Navigation buttons */
 .react-calendar__navigation button {
   background: none;
   border: none;
   cursor: pointer;
   outline: none;
-  font-size: 18px;
-  color: #007bff; /* Accent color */
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #e8ebee; /* Button text color */
+  transition: color 0.3s ease-in-out;
 }
 
 .react-calendar__navigation button:hover {
-  color: #0056b3; /* Darker accent color on hover */
+  color: #0056b3; /* Darker color on hover */
 }
 
+/* Left and right navigation buttons */
+.react-calendar__navigation button.react-calendar__navigation__arrow {
+  margin: 0 5px; /* Add margin between the buttons */
+}
+
+/* Label text for navigation */
+.react-calendar__navigation__label__labelText {
+  color: #ffffff; /* Text color for label text */
+  font-size: 18px; /* Font size for label text */
+  margin: 0 10px; /* Add margin between the label text and buttons */
+}
+
+/* Weekdays container */
 .react-calendar__month-view__weekdays {
   display: flex;
   justify-content: space-around;
   background-color: #222222; /* Slightly lighter background */
-  padding: 6px 0;
+  padding: 10px 0;
+  padding-left: 1rem;
+  color: white;
 }
 
+/* Days container */
 .react-calendar__month-view__days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
 
+/* Individual day */
 .react-calendar__month-view__days__day {
   padding: 8px;
   text-align: center;
@@ -153,6 +178,7 @@
   background-color: #0056b3; /* Darker accent color on hover */
 }
 
+/* Active tile */
 .react-calendar__tile--active {
   background-color: #0056b3; /* Darker active tile color */
 }

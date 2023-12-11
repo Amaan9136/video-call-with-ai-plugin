@@ -7,6 +7,7 @@ export default function Summary() {
   const [data, setData] = useState({
     keyPoints: [],
     transcribe: '',
+    summary: '',
   });
   const messageRef = useRef(null);
 
@@ -66,8 +67,15 @@ export default function Summary() {
               <h1 className="text-lg font-semibold mb-1">Transcribed Data:</h1>
               {data.transcribe}
             </div>
+            <div className='mb-3 border-2 p-3 border-black'>
+              <h1 className="text-lg font-semibold mb-1">Brief Description:</h1>
+              <h1 className="text-lg font-semibold mb-1">AI generated:</h1>
+              This informal networking event brought together individuals from diverse backgrounds for an evening of conversation and connection.
+              Attendees enjoyed drinks and appetizers while engaging in meaningful discussions about their careers,
+              current industry trends, and potential collaborations.
+            </div>
           </div>
-          <button className='mt-3 btn' onClick={() => { handleSendMail(messageRef.current.innerText) }}>Send Email</button> {/* Added a button to trigger sending email */}
+          <button className='mt-3 btn' onClick={() => { handleSendMail(setAppState, "The Meeting Was Ended", messageRef.current.innerText) }}>Send Email</button> {/* Added a button to trigger sending email */}
         </div>
       )}
     </>

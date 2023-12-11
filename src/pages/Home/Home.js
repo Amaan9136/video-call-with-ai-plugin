@@ -12,17 +12,34 @@ export default function Input({ setUserName }) {
   const inputRef = useRef(null);
   const joinRef = useRef(null);
   const { appState, setAppState } = useContext(AppContext);
-
   function handleCalendar() {
     setAppState({
       ...appState,
       calendar: {
         ...appState.calendar,
-        showCalendar: !appState.calendar.showCalendar
-      }
+        showCalendar: !appState.calendar.showCalendar,
+      },
     });
   }
-
+  
+  const handleCalendarChange = (selectedDate) => {
+    const dateString = selectedDate.toISOString(); // Convert to string
+    localStorage.setItem('selectedDate', dateString);
+    setAppState({
+      ...appState,
+      calendar: {
+        showCalendar: !appState.calendar.showCalendar,
+        calendarDate: dateString,
+      },
+      loaderShow: false,
+      model: {
+        showModel: true,
+        modelType:'date',
+        modelMsg: "Date Set Successfully!"
+      }
+    });
+  };
+  
   const handleNewMeeting = () => {
     const name = inputRef.current.value.trim();
     const joinValue = joinRef.current.value.trim();
@@ -75,9 +92,26 @@ export default function Input({ setUserName }) {
       const snapshot = await firepadRef.root.once('value');
       const allKeys = snapshot.exists() ? Object.keys(snapshot.val()) : [];
       if (allKeys.includes(joinValue)) {
-        setAppState({ loaderShow: false, model: { showModel: true, modelNeedInput: true, modelType:'join', modelMsg: 'Enter Name to Join Meeting:' } });
+        setAppState(prevState => ({
+          ...prevState,
+          loaderShow: false,
+          model: {
+            showModel: true,
+            modelNeedInput: true,
+            modelType: 'join',
+            modelMsg: 'Enter Name to Join Meeting:'
+          }
+        }));
       } else {
-        setAppState({ loaderShow: false, model: { showModel: true, modelNeedInput: false, modelMsg: 'Meeting ID is invalid!' } });
+        setAppState(prevState => ({
+          ...prevState,
+          loaderShow: false,
+          model: {
+            showModel: true,
+            modelNeedInput: false,
+            modelMsg: 'Meeting ID is invalid!'
+          }
+        }));
         joinRef.current.value = '';
       }
     } catch (error) {
@@ -85,6 +119,7 @@ export default function Input({ setUserName }) {
       alert("Error fetching data from Firebase. Please check console for details.");
     }
   };
+
 
   return (
     <>
@@ -97,7 +132,15 @@ export default function Input({ setUserName }) {
           <Model message={appState.model.modelMsg} />
         )
       )}
-      {appState.calendar.showCalendar&&<Calendar className='react-calendar'/>}
+      <div className="flex justify-center p-3">
+        {appState.calendar.showCalendar && (
+          <Calendar
+            className='react-calendar'
+            onChange={handleCalendarChange}
+            value={appState.calendar.calendarDate}
+          />
+        )}
+      </div>
       <div className="home-page">
         <Header handleCalendar={handleCalendar}>
           <div className="action-btn">

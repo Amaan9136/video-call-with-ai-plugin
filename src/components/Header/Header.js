@@ -7,12 +7,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import './Header.scss';
 
-export default function Header({ children , handleCalendar}) {
+export default function Header({ children, handleCalendar }) {
   return (
     <>
       <div className="header">
         <div className="logo">
-<p className='text-3xl'>WeXpert</p>
+          <p className='text-3xl'>WeXpert</p>
           <span className="help-text mt-3">Meet</span>
         </div>
         <div className="action-btn">
@@ -37,7 +37,7 @@ export default function Header({ children , handleCalendar}) {
         </div>
         <div className="right-side">
           <div className="content">
-          <img src={process.env.PUBLIC_URL + '/assets/meetImg.jpg'} alt="Meet" />
+            <img src={process.env.PUBLIC_URL + '/assets/meetImg.jpg'} alt="Meet" />
           </div>
         </div>
       </div>

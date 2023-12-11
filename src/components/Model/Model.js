@@ -30,11 +30,22 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
       setKeyPoints((prevKeyPoints) => [...prevKeyPoints, keyPointsValue]);
       localStorage.setItem('keyPoints', JSON.stringify([...keyPoints, keyPointsValue]));
     } else if (appState.model.modelType === 'check-email') {
-      const emailMessage = inputRef.current.value+` 
-      The meeting has commenced. Please join immediately; the host is awaiting your presence.`;
-      handleSendMail(emailMessage);
+      const meetingLink = window.location.href;
+    
+      const emailSubject = 'Join the Meeting Now!';
+      const emailBody = `
+        <div style="color: blue;">
+          <p>Dear Attendee,</p>
+          <p>The meeting has commenced. Your presence is required.</p>
+          <p>Please click the link below to join the meeting:</p>
+          <p><a href="${meetingLink}">${meetingLink}</a></p>
+        </div>
+      `;
+    
+      handleSendMail(emailSubject, emailBody);
       setAppState({ ...appState, model: { ...appState.model, showModel: false } });
     }
+    
   };
 
   const handleCancel = () => {
@@ -46,6 +57,11 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
       <div className="model-box from-top bg-gray-800 rounded-lg shadow-md px-8 py-3 font-semibold">
         <div className='message text-lg font-semibold'>
           {message}
+          <br />
+          {appState.model.modelType === 'date' && (
+            <p>{appState.calendar.calendarDate.toLocaleDateString('en-US')}</p>
+          )}
+
         </div>
         {(appState.model.modelNeedInput) && (
           <div className='operation'>
