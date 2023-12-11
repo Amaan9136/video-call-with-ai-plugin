@@ -1,5 +1,4 @@
 import {
-  faAngleRight,
   faTimes,
   faUserFriends,
 } from "@fortawesome/free-solid-svg-icons";
@@ -21,8 +20,11 @@ const Transcription = ({ setMeetingState }) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
+          const transcript = event.results[i][0].transcript;
           setTranscriptionMsg(prevTranscriptionMsg => prevTranscriptionMsg + transcript + '...');
-        } else {
+          localStorage.setItem('transcript', transcript);
+        }
+        else {
           interimTranscript += transcript;
         }
       }
@@ -42,7 +44,7 @@ const Transcription = ({ setMeetingState }) => {
 
   useEffect(() => {
     startRecognition();
-  }, []); 
+  }, []);
 
   const toggleTranscription = () => {
     setMeetingState(prev => ({
@@ -53,17 +55,10 @@ const Transcription = ({ setMeetingState }) => {
 
   return (
     <>
-      <button id="drag-container">
-        <FontAwesomeIcon
-          className="text-3xl absolute text-black m-3 transition-opa z-10"
-          icon={faAngleRight}
-          onClick={toggleTranscription}
-        />
-      </button>
       <div className={`messenger-container from-left mx-2 my-3 rounded-md `}>
         <div className="border-b-2 pb-3 border-black sticky top-0 bg-white">
           <div className="messenger-header text-2xl">
-            <p>Transcription</p> 
+            <p>Transcription</p>
             <FontAwesomeIcon
               className="icon transition-opa z-10"
               onClick={toggleTranscription}
@@ -79,7 +74,9 @@ const Transcription = ({ setMeetingState }) => {
         </div>
 
         <div className="transcript-section pl-7 pr-3 text-left font-medium">
-        {transcriptionMsg || 'Talk to display transcription'}
+          {transcriptionMsg || (
+            <p className="animate-pulse infinite">Talk to display transcription...</p>
+          )}
         </div>
       </div>
     </>

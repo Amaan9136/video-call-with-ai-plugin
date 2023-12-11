@@ -1,18 +1,35 @@
-from flask import Flask, render_template, request
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from flask import Flask, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def send_email(sender_email, sender_password, recipient_emails, message):
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = ", ".join(recipient_emails)
+    msg["Subject"] = "About the meeting"
+    msg.attach(MIMEText(message, "plain"))
 
-@app.route('/send-transcription', methods=['POST'])
-def receive_transcription():
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, recipient_emails, msg.as_string())
+
+@app.route('/send-mail', methods=['POST'])
+def send_mail():
     data = request.get_json()
-    transcription = data.get('transcription')
-    # Process the received transcription data as needed (e.g., store it in a database)
-    print("Received transcription:", transcription)
-    return 'Transcription received successfully'
+    message = data.get('message')
+
+    sender_email = "abhishekbabhi55@gmail.com"
+    sender_password = "ptbb wwzr xcby aghm"
+    recipient_emails = ["varunbvernekar@gmail.com","syedkhalander66@gmail.com"]
+
+    send_email(sender_email, sender_password, recipient_emails, message)
+    return 'Email sent successfully'
 
 if __name__ == '__main__':
     app.run(debug=True)

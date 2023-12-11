@@ -6,13 +6,24 @@ import "./Home.scss";
 import firepadRef from '../../server/firebase';
 import Model from '../../components/Model/Model';
 import { AppContext, Loader } from '../../AppContext';
+import Calendar from 'react-calendar';
 
 export default function Input({ setUserName }) {
   const inputRef = useRef(null);
   const joinRef = useRef(null);
   const { appState, setAppState } = useContext(AppContext);
 
-  const handleInputClick = () => {
+  function handleCalendar() {
+    setAppState({
+      ...appState,
+      calendar: {
+        ...appState.calendar,
+        showCalendar: !appState.calendar.showCalendar
+      }
+    });
+  }
+
+  const handleNewMeeting = () => {
     const name = inputRef.current.value.trim();
     const joinValue = joinRef.current.value.trim();
     const isValidInput = /^[a-zA-Z\s]*$/.test(name);
@@ -35,6 +46,15 @@ export default function Input({ setUserName }) {
         }
       });
     } else {
+      setAppState({
+        loaderShow: false,
+        model: {
+          showModel: true,
+          modelNeedInput: true,
+          modelType: 'check-email',
+          modelMsg: "Would you like to send a meeting reminder via email? If yes, please provide the title of the email."
+        }
+      });
       setUserName(name);
     }
   };
@@ -55,7 +75,7 @@ export default function Input({ setUserName }) {
       const snapshot = await firepadRef.root.once('value');
       const allKeys = snapshot.exists() ? Object.keys(snapshot.val()) : [];
       if (allKeys.includes(joinValue)) {
-        setAppState({ loaderShow: false, model: { showModel: true, modelNeedInput: true, modelMsg: 'Enter Name to Join Meeting:' } });
+        setAppState({ loaderShow: false, model: { showModel: true, modelNeedInput: true, modelType:'join', modelMsg: 'Enter Name to Join Meeting:' } });
       } else {
         setAppState({ loaderShow: false, model: { showModel: true, modelNeedInput: false, modelMsg: 'Meeting ID is invalid!' } });
         joinRef.current.value = '';
@@ -70,14 +90,16 @@ export default function Input({ setUserName }) {
     <>
       {appState.loaderShow && <Loader message={"Getting Info..."} />}
       {(appState.model.showModel && appState.model.modelNeedInput) ? (
-        <Model message={appState.model.modelMsg} setUserName={setUserName} inputRef={inputRef} />
+        // model for joiner
+        <Model message={appState.model.modelMsg} setUserName={setUserName} />
       ) : (
         appState.model.showModel && (
           <Model message={appState.model.modelMsg} />
         )
       )}
+      {appState.calendar.showCalendar&&<Calendar className='react-calendar'/>}
       <div className="home-page">
-        <Header>
+        <Header handleCalendar={handleCalendar}>
           <div className="action-btn">
             <div className="input-block">
               <div className="input-section">
@@ -88,7 +110,7 @@ export default function Input({ setUserName }) {
                 />
               </div>
             </div>
-            <button className="btn" onClick={handleInputClick}>
+            <button className="btn" onClick={handleNewMeeting}>
               <FontAwesomeIcon className="icon-block" icon={faVideo} />
               New Meeting
             </button>

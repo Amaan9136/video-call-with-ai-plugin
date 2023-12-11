@@ -108,7 +108,6 @@ function Meet(props) {
     fetchData();
 
     return () => {
-      
       isSubscribed = false;
     };
   }, [name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant]);

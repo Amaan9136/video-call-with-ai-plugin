@@ -1,39 +1,74 @@
-import React, { useContext, useEffect } from 'react';
-import { AppContext, Loader } from '../../AppContext';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { AppContext, Loader, handleSendMail } from '../../AppContext';
+import './Summary.css';
 
 export default function Summary() {
   const { appState, setAppState } = useContext(AppContext);
+  const [data, setData] = useState({
+    keyPoints: [],
+    transcribe: '',
+  });
+  const messageRef = useRef(null);
+
   useEffect(() => {
+    const storedKeyPoints = localStorage.getItem('keyPoints');
+    if (storedKeyPoints) {
+      setData((prevData) => ({
+        ...prevData,
+        keyPoints: JSON.parse(storedKeyPoints),
+      }));
+    }
+
+    const storedTranscribe = localStorage.getItem('transcript');
+    if (storedTranscribe) {
+      setData((prevData) => ({
+        ...prevData,
+        transcribe: storedTranscribe,
+      }));
+    }
+
     setAppState((prevAppState) => ({
       ...prevAppState,
       loaderShow: true,
     }));
-  
+
     const loaderTimeout = setTimeout(() => {
       setAppState((prevAppState) => ({
         ...prevAppState,
         loaderShow: false,
       }));
     }, 3000);
-  
+
     return () => {
       clearTimeout(loaderTimeout);
     };
-  }, []);
-  
+  }, [setAppState]);
+
   return (
     <>
-      {appState.loaderShow ? ( 
+      {appState.loaderShow ? (
         <Loader message={"Heading to the Summary Page. Hold tight, we're almost there!"} />
       ) : (
-        <div className='flex justify-center items-center h-screen'>
-        <p className='summary p-10 rounded-xl bg-white text-black max-w-md'>
-          <h1 className='text-3xl font-semibold'>Summary :</h1>
-          <br />
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea minus suscipit architecto rem itaque alias obcaecati tempora. Adipisci autem placeat magni ducimus unde beatae quae, voluptate sunt provident deserunt reprehenderit, dicta odit repellat consectetur ab amet dolorem sequi expedita ipsam. Voluptatem porro ab non laudantium laboriosam quis tenetur nemo nulla, culpa dolorem, maiores reprehenderit id esse unde, beatae impedit perferendis quibusdam? Vitae officiis eaque et, provident beatae cum expedita voluptatem id, qui fuga nam ipsam numquam laborum officia natus aspernatur ab, tempora sint. Magnam animi natus commodi asperiores corporis consectetur beatae, ipsa pariatur officiis, optio accusantium odio error cupiditate alias voluptate deleniti ipsum! Architecto dolore doloribus assumenda officia hic dolorum reiciendis laboriosam, vero, sed provident deleniti distinctio quis aliquid ratione quo! Expedita reprehenderit maxime eos inventore harum in esse voluptas fugit dolores ullam, quis deleniti odit culpa quam minus, sed optio nesciunt dicta exercitationem cum voluptatibus cumque veritatis! Repellat velit dolorum nulla labore harum iusto molestiae ad dolorem natus. Corrupti magnam non quam dolor consectetur natus eius esse a. At cumque officia nam, blanditiis doloremque sequi. Nemo, temporibus pariatur. Repellat enim quaerat earum magnam velit delectus dolor sed necessitatibus iure cum, doloribus eligendi laudantium molestias, consequatur possimus in? Est facilis quam sunt magnam perferendis corrupti, amet ullam atque sequi totam iste animi, vel provident, sit itaque nemo iure qui deleniti! Earum, facilis corrupti quaerat architecto vitae mollitia itaque non doloremque temporibus reprehenderit fugit debitis deleniti a in consectetur, fuga reiciendis accusamus sed vero, amet nostrum nesciunt aliquam? Quisquam odit fugit eveniet eius vel minima inventore dignissimos quos, esse fugiat perspiciatis nihil perferendis sapiente deleniti. Dolor, temporibus aliquid perspiciatis dolorem expedita debitis cum hic? Rerum nisi cum ipsa dolorum dolores ducimus eius non veniam! Recusandae, modi placeat. Laborum animi repellendus, consequuntur quis quaerat saepe accusantium, quo eos quae aspernatur repellat odio ut eius magnam suscipit voluptatem! Repudiandae quasi eos nulla quod! Id est amet facilis cupiditate ipsum, in iure numquam minus minima explicabo mollitia quas delectus quis natus odio labore, error accusamus! Perferendis, ullam fuga? Doloremque nostrum commodi vitae, optio amet, quas mollitia fugiat dignissimos nobis earum accusantium necessitatibus a enim voluptatem, reprehenderit iure vero ab dicta saepe ducimus laborum eum harum adipisci consequatur? Repellat, quia ullam? Quasi ea doloremque pariatur! Nemo ex illum in praesentium recusandae corrupti veritatis ut ea, modi sint laborum quo neque autem dicta. Explicabo repellendus adipisci illum, laudantium nostrum minus, recusandae vero dolore soluta fuga hic excepturi magnam officia. Possimus nemo nobis deleniti sapiente temporibus unde aut nihil voluptates labore incidunt, sunt rerum? Atque enim illo, dicta molestiae aspernatur voluptatem non nulla nisi at soluta odit corrupti saepe id quas impedit explicabo vero, vel asperiores voluptatibus suscipit, fugiat ab excepturi. Animi commodi laboriosam accusantium voluptatibus, ipsam ab nemo, quos veniam natus vel quia sapiente architecto eum voluptatum? Ut accusamus, praesentium dignissimos et sunt assumenda adipisci, provident rem, fuga magni architecto numquam animi possimus delectus. Deleniti error quaerat beatae veniam labore repellendus, officiis quibusdam, reiciendis laboriosam amet voluptatem? Nobis inventore eos provident, quidem excepturi facere incidunt omnis ipsam repellat. Beatae deleniti saepe deserunt dolorem ex harum voluptas? Harum cupiditate possimus est corrupti aperiam assumenda, commodi nihil debitis. Dolores molestiae libero maxime non a laboriosam tempora, exercitationem quisquam dicta quidem amet asperiores ipsum tempore nostrum id autem! A aliquid vero ut nam placeat ratione sunt quia molestias doloribus. Animi facere excepturi eos dolorem temporibus atque cumque, in officia corporis ipsa ipsam! Cupiditate quibusdam inventore odio accusantium ullam tenetur praesentium provident dolorum, et laudantium. Perferendis, quidem! Perferendis maxime mollitia nemo aliquid odit unde, nostrum sapiente cupiditate non libero exercitationem eos! Doloremque, voluptatem, corporis mollitia consequuntur modi laboriosam tenetur neque voluptas reprehenderit, velit exercitationem perferendis vitae nemo repellendus aliquam. Obcaecati esse magnam libero in mollitia repellendus officiis numquam eveniet ab doloremque explicabo assumenda nesciunt, aspernatur ea nulla perspiciatis quas facilis aliquid corporis beatae. Officiis perspiciatis recusandae et minima architecto, ea optio iste itaque. Quis reprehenderit suscipit ipsam animi pariatur et maiores consequatur, aliquid praesentium perferendis quam molestias libero deserunt illo nostrum accusamus voluptatum odit soluta, illum earum ea placeat voluptas! Culpa saepe ea expedita blanditiis consectetur tenetur commodi est cumque incidunt iure nesciunt facilis eligendi assumenda quia deserunt voluptatibus possimus, quod omnis laudantium eum iste, doloribus ullam. Quam nam ullam tempora? Ad pariatur aut ut dolorum, tempora, excepturi aliquam iusto quam possimus, quasi dolores ipsam quas dolor consequuntur iste harum eius unde. Ab modi dolores, ut nisi saepe tempora itaque aliquid ipsa maiores alias officiis id pariatur facilis quisquam unde aut sapiente? Fuga maiores at obcaecati officia non aperiam itaque deserunt sed vitae tenetur optio totam natus velit nulla quam vel iure quaerat sint, voluptas quibusdam necessitatibus. Earum facere magnam nihil quam reiciendis labore perferendis, quo amet dolorum sunt non laboriosam doloribus explicabo dolore officia ipsam tempora sequi accusantium dignissimos possimus nemo. Inventore, quisquam nihil incidunt possimus exercitationem eius corrupti ipsa, enim harum dignissimos aspernatur itaque veniam deserunt mollitia reprehenderit, nesciunt sequi aliquam corporis maxime architecto neque illo. Laboriosam dolorem nam ut enim, similique maxime incidunt sint, hic quibusdam cum, velit quis autem numquam asperiores ad necessitatibus provident delectus? Illum hic a asperiores, doloremque nihil accusantium, vero quo magnam consectetur quasi ex? Perferendis beatae vel dolorum architecto neque dolore, repudiandae veniam repellendus totam corporis omnis magnam! Voluptates rem, vero maiores impedit nesciunt necessitatibus suscipit dolor tempore officiis magnam soluta neque deserunt consectetur minima mollitia quis eligendi ea, adipisci aliquid unde exercitationem repudiandae earum! Temporibus illo, sit eius cumque dolorem atque ipsum harum quos quod accusamus officia nihil? Pariatur tempora similique officiis, sapiente eaque, maiores atque iusto quasi vel asperiores perferendis obcaecati magni minima repellendus. Fuga debitis provident eaque qui, perferendis ad non iure! Et iure, delectus porro illum eos veritatis sit officia inventore similique error eveniet ut reprehenderit deleniti alias aliquam asperiores praesentium ea facilis ducimus. Explicabo, maiores asperiores molestias fuga quod neque commodi architecto excepturi velit impedit facere eos quos voluptatibus sequi voluptate consequatur nisi necessitatibus veritatis unde molestiae veniam soluta laboriosam doloribus! Quia labore quis, qui dolores dolorum hic necessitatibus inventore eligendi itaque nostrum excepturi quas, laborum nesciunt.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente adipisci quidem aut temporibus animi odit placeat porro voluptatem aliquam recusandae, qui voluptas et illum deserunt explicabo dolor unde! Nesciunt assumenda asperiores quod necessitatibus magni magnam nihil quos, cupiditate velit. Cum accusantium debitis reprehenderit voluptates autem, hic doloribus numquam provident perspiciatis incidunt, rem dolores velit libero cumque distinctio veniam ducimus minus illum, odit fugit eum beatae sint pariatur nesciunt. Quo blanditiis dolore doloribus consectetur nostrum repellendus fuga exercitationem, sequi ad? Repellendus tenetur cupiditate, dolorum error culpa sed molestias numquam eum possimus, sunt neque perspiciatis cum. Dicta eveniet perferendis nam quo architecto?
-        </p>
-      </div>
+        <div className='summary flex flex-col justify-center items-center h-screen'>
+          <div ref={messageRef} className='p-10 rounded-xl bg-white text-black max-w-md'>
+            <h1 className='text-3xl font-semibold mb-4'>Summary :</h1>
+            {data.keyPoints.length !== 0 && (
+              <div className='mb-3 border-2 p-3 border-black'>
+                <h1 className="text-lg font-semibold mb-1">Key Points Discussed:</h1>
+                <ul>
+                  {data.keyPoints.map((point, index) => (
+                    <li className='' key={index}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className='mb-3 border-2 p-3 border-black'>
+              <h1 className="text-lg font-semibold mb-1">Transcribed Data:</h1>
+              {data.transcribe}
+            </div>
+          </div>
+          <button className='mt-3 btn' onClick={() => { handleSendMail(messageRef.current.innerText) }}>Send Email</button> {/* Added a button to trigger sending email */}
+        </div>
       )}
     </>
   );

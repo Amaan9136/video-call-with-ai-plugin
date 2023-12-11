@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faQuestionCircle,
   faExclamationCircle,
-  faCog,
+  faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import './Header.scss';
 
-export default function Header({ children }) {
+export default function Header({ children , handleCalendar}) {
   return (
     <>
       <div className="header">
@@ -18,7 +18,7 @@ export default function Header({ children }) {
         <div className="action-btn">
           <button><FontAwesomeIcon className="icon-block" icon={faQuestionCircle} /></button>
           <button><FontAwesomeIcon className="icon-block" icon={faExclamationCircle} /></button>
-          <button><FontAwesomeIcon className="icon-block" icon={faCog} /></button>
+          <button onClick={handleCalendar}><FontAwesomeIcon className="icon-block" icon={faCalendarAlt} /></button>
         </div>
       </div>
       <div className="body">

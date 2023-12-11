@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import './Model.css';
-import { AppContext } from '../../AppContext';
+import { AppContext, handleSendMail } from '../../AppContext';
 
-export default function Model({ message, setUserName, inputRef }) {
+export default function Model({ message, setUserName, setKeyPoints, keyPoints }) {
   const { appState, setAppState } = useContext(AppContext);
-
+  const inputRef = useRef()
   const handleConfirm = () => {
-    if (setUserName && inputRef.current.value) {
+    if (appState.model.modelType === 'join' ) {
+      // set username for joiner
       const name = inputRef.current.value.trim();
       const isValidInput = /^[a-zA-Z\s]*$/.test(name);
       if (!isValidInput || name === '') {
-        console.log("invalid");
         setAppState({
           ...appState,
           model: {
@@ -24,6 +24,16 @@ export default function Model({ message, setUserName, inputRef }) {
         setUserName(name);
         setAppState({ ...appState, model: { ...appState.model, showModel: false } });
       }
+    } else if (appState.model.modelType === 'keys') {
+      // to add key points
+      const keyPointsValue = inputRef.current.value.trim();
+      setKeyPoints((prevKeyPoints) => [...prevKeyPoints, keyPointsValue]);
+      localStorage.setItem('keyPoints', JSON.stringify([...keyPoints, keyPointsValue]));
+    } else if (appState.model.modelType === 'check-email') {
+      const emailMessage = inputRef.current.value+` 
+      The meeting has commenced. Please join immediately; the host is awaiting your presence.`;
+      handleSendMail(emailMessage);
+      setAppState({ ...appState, model: { ...appState.model, showModel: false } });
     }
   };
 
@@ -33,21 +43,21 @@ export default function Model({ message, setUserName, inputRef }) {
 
   return (
     <div className="transparent-background">
-      <div className="model-box from-top bg-gray-800 rounded-lg shadow-md px-8 mb-2 pt-4 font-semibold">
-        <div className='message'>
+      <div className="model-box from-top bg-gray-800 rounded-lg shadow-md px-8 py-3 font-semibold">
+        <div className='message text-lg font-semibold'>
           {message}
         </div>
-        {setUserName && (
+        {(appState.model.modelNeedInput) && (
           <div className='operation'>
             <input
-              className="text-[1.2rem] border-gray-700 rounded px-3 py-2 mt-2 outline-none font-normal focus:border-emerald-500 border-[3px] bg-gray-900"
+              className="text-[1.2rem] w-full border-gray-700 rounded px-3 py-2 mt-2 outline-none font-normal focus:border-emerald-500 border-[3px] bg-gray-900"
               ref={inputRef}
             />
           </div>
         )}
         <div className={`py-3 flex justify-${appState.model.modelNeedInput ? 'end' : 'center'}`}>
           <button
-            className={`text-white border border-white px-4 py-2 rounded ${appState.model.modelNeedInput ? 'mr-4':''} hover:bg-gray-600 hover:border-gray-600`}
+            className={`text-white border border-white px-4 py-2 rounded ${appState.model.modelNeedInput ? 'mr-4' : ''} hover:bg-gray-600 hover:border-gray-600`}
             onClick={handleCancel}
           >
             Cancel
@@ -57,10 +67,16 @@ export default function Model({ message, setUserName, inputRef }) {
               onClick={handleConfirm}
               className="bg-emerald-500 border border-emerald-500 px-4 py-2 rounded hover:bg-emerald-700 hover:border-emerald-700 text-white shadow-md"
             >
-              Confirm
+              {appState.model.modelType === 'keys' ? 'Add' : (appState.model.modelType === 'check-email' ? 'Send' : 'Confirm')}
             </button>
           )}
         </div>
+        {setKeyPoints && keyPoints.length !== 0 && appState.model.modelType === 'keys' && (
+          <div className='max-w-[15rem]'>
+            <h1 className="text-lg font-semibold mb-1">Key Points Added:</h1>
+            {keyPoints.join(', ')}
+          </div>
+        )}
       </div>
     </div>
   );
