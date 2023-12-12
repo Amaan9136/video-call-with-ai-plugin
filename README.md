@@ -1,10 +1,10 @@
-# Google-Meet-Clone
+# video-call-using-ai
 
 <p align="center"> 
   <h3 align="center">Google Meet Clone</h3>
 
   <p align="center">
-    Google Meet Clone!
+    video-call-using-ai!
     <br />  
      A Video Conference App Similar to Google Meet
     <br />
