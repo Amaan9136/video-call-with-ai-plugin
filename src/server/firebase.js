@@ -2,8 +2,8 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 
 var firebaseConfig = {
-  apiKey: "AIzaSyAcvzFXEUPBpUe69uERDTpPh_zXGglmGwI", // Add API Key
-  databaseURL:"https://vivid-alchemy-399203-default-rtdb.firebaseio.com/" // Add databaseURL
+  apiKey: "", // Add API Key
+  databaseURL:"/" // Add databaseURL
 };
 
 firebase.initializeApp(firebaseConfig);
