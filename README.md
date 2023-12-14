@@ -1,12 +1,12 @@
 # video-call-using-ai
 
 <p align="center"> 
-  <h3 align="center">Google Meet Clone</h3>
+  <h3 align="center">WeXpert Meet </h3>
 
   <p align="center">
     video-call-using-ai!
     <br />  
-     A Video Conference App Similar to Google Meet
+     A Video Conference App - WeXpert Meet
     <br />
   </p>
 </p>
