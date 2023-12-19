@@ -25,9 +25,9 @@ def send_mail():
     message = data.get('message', '<p>About the meeting</p>')
     title = data.get('title', 'About the meeting') 
 
-    sender_email = "abhishekbabhi55@gmail.com"
-    sender_password = "ptbb wwzr xcby aghm"
-    recipient_emails = ["varunbvernekar@gmail.com", "syedkhalander66@gmail.com"]
+    sender_email = "" #sender-email
+    sender_password = ""  #sender_password
+    recipient_emails = ["recipient_emails@gmail.com", "recipient_emails2@gmail.com"]
 
     send_email(sender_email, sender_password, recipient_emails, message, title)
     return 'Email sent successfully'
