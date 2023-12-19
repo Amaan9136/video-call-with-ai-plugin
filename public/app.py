@@ -22,8 +22,8 @@ def send_email(sender_email, sender_password, recipient_emails, message='<p>Abou
 @app.route('/send-mail', methods=['POST'])
 def send_mail():
     data = request.get_json()
-    message = data.get('message')
-    title = data.get('title') 
+    message = data.get('message', '<p>About the meeting</p>')
+    title = data.get('title', 'About the meeting') 
 
     sender_email = "abhishekbabhi55@gmail.com"
     sender_password = "ptbb wwzr xcby aghm"

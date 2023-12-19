@@ -15,7 +15,9 @@ export const Loader = ({ message = "Loading..." }) => (
   </>
 );
 
-export function handleSendMail(setAppState, title, message) {
+export function handleSendMail(setAppState, message, title) {
+    console.log(message);
+
   fetch('http://127.0.0.1:5000/send-mail', {
     method: 'POST',
     headers: {
@@ -29,7 +31,7 @@ export function handleSendMail(setAppState, title, message) {
         ...prevState,
         loaderShow: false,
         model: {
-          ...prevState.model, // Retain other properties in the model
+          ...prevState.model, 
           showModel: true,
           modelNeedInput: false,
           modelMsg: data,
@@ -53,10 +55,10 @@ export default function AppContextProvider({ children }) {
     loaderShow: false,
     calendar: {
       showCalendar: false,
-      calendarDate: new Date(),
+      calendarDate: '',
     },
   });
-
+  
   const AppContextValues = {
     appState,
     setAppState,

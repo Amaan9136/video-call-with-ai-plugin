@@ -12,6 +12,7 @@ export default function Input({ setUserName }) {
   const inputRef = useRef(null);
   const joinRef = useRef(null);
   const { appState, setAppState } = useContext(AppContext);
+  
   function handleCalendar() {
     setAppState({
       ...appState,
@@ -23,8 +24,8 @@ export default function Input({ setUserName }) {
   }
   
   const handleCalendarChange = (selectedDate) => {
-    const dateString = selectedDate.toISOString(); // Convert to string
-    localStorage.setItem('selectedDate', dateString);
+    const dateString = selectedDate.toISOString(); 
+    localStorage.setItem('selectedDate', selectedDate);
     setAppState({
       ...appState,
       calendar: {
@@ -133,13 +134,13 @@ export default function Input({ setUserName }) {
         )
       )}
       <div className="flex justify-center p-3">
-        {appState.calendar.showCalendar && (
-          <Calendar
-            className='react-calendar'
-            onChange={handleCalendarChange}
-            value={appState.calendar.calendarDate}
-          />
-        )}
+      {appState.calendar.showCalendar && (
+  <Calendar
+    className='react-calendar'
+    onChange={handleCalendarChange}
+    value={appState.calendar.calendarDate || new Date()}
+  />
+)}
       </div>
       <div className="home-page">
         <Header handleCalendar={handleCalendar}>

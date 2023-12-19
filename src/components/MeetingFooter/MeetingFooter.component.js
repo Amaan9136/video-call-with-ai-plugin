@@ -27,7 +27,6 @@ const MeetingFooter = (props) => {
   const { appState, setAppState } = useContext(AppContext);
   const inputRef = useRef();
   const [keyPoints, setKeyPoints] = useState([]);
-  console.log(keyPoints)
   const captureElementRef = useRef(null);
   const [streamState, setStreamState] = useState({
     mic: true,

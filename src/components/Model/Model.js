@@ -6,7 +6,7 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
   const { appState, setAppState } = useContext(AppContext);
   const inputRef = useRef()
   const handleConfirm = () => {
-    if (appState.model.modelType === 'join' ) {
+    if (appState.model.modelType === 'join') {
       // set username for joiner
       const name = inputRef.current.value.trim();
       const isValidInput = /^[a-zA-Z\s]*$/.test(name);
@@ -31,7 +31,7 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
       localStorage.setItem('keyPoints', JSON.stringify([...keyPoints, keyPointsValue]));
     } else if (appState.model.modelType === 'check-email') {
       const meetingLink = window.location.href;
-    
+
       const emailSubject = 'Join the Meeting Now!';
       const emailBody = `
         <div style="color: blue;">
@@ -41,11 +41,11 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
           <p><a href="${meetingLink}">${meetingLink}</a></p>
         </div>
       `;
-    
+
       handleSendMail(emailSubject, emailBody);
       setAppState({ ...appState, model: { ...appState.model, showModel: false } });
     }
-    
+
   };
 
   const handleCancel = () => {
@@ -58,9 +58,15 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
         <div className='message text-lg font-semibold'>
           {message}
           <br />
-          {appState.model.modelType === 'date' && (
-            <p>{appState.calendar.calendarDate.toLocaleDateString('en-US')}</p>
-          )}
+{appState.model.modelType === 'date' && appState.calendar?.calendarDate && (
+  <p>
+    {new Date(appState.calendar.calendarDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })}
+  </p>
+)}
 
         </div>
         {(appState.model.modelNeedInput) && (

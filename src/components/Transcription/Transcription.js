@@ -22,11 +22,11 @@ const Transcription = ({ setMeetingState }) => {
         if (event.results[i].isFinal) {
           const transcript = event.results[i][0].transcript;
           setTranscriptionMsg(prevTranscriptionMsg => prevTranscriptionMsg + transcript + '...');
-          localStorage.setItem('transcript', transcript);
         }
         else {
           interimTranscript += transcript;
         }
+        localStorage.setItem('transcript', transcriptionMsg);
       }
     };
 
