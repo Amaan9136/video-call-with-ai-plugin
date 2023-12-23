@@ -92,9 +92,9 @@ def send_mail():
     data = request.get_json()
     message = data.get('message', '<p>About the meeting</p>')
     title = data.get('title', 'About the meeting') 
-    sender_email = "syedkhalander66@gmail.com"
-    sender_password = "dwtx buxw gdzj vzfc"
-    recipient_emails = ["syedkhalander66@gmail.com", "kinglocker00@gmail.com"]
+    sender_email = "syedkhalander66@gmail.com" # sender email
+    sender_password = "" # sender password
+    recipient_emails = ["syedkhalander66@gmail.com", "kinglocker00@gmail.com"] # receiver email
     send_email(sender_email, sender_password, recipient_emails, message, title)
     return 'Email sent successfully'
 
