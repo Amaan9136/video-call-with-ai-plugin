@@ -32,17 +32,19 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
     } else if (appState.model.modelType === 'check-email') {
       const meetingLink = window.location.href;
 
-      const emailSubject = 'Join the Meeting Now!';
+      const emailTitle = 'Join the Meeting Now!';
       const emailBody = `
-        <div style="color: blue;">
-          <p>Dear Attendee,</p>
-          <p>The meeting has commenced. Your presence is required.</p>
-          <p>Please click the link below to join the meeting:</p>
-          <p><a href="${meetingLink}">${meetingLink}</a></p>
-        </div>
-      `;
+<div style="color: blue;">
+  <p>Dear Attendee,</p>
+  <p>The meeting has commenced. Your presence is required.</p>
+  <p style="color: red;">Host's Message🤵: ${inputRef.current.value}</p>
+  <p>Please click the link below to join the meeting:</p>
+  <p><a href="${meetingLink}">${meetingLink}</a></p>
+</div>
+`;
 
-      handleSendMail(emailSubject, emailBody);
+      // changes made to show model
+      handleSendMail(setAppState, emailTitle, emailBody);
       setAppState({ ...appState, model: { ...appState.model, showModel: false } });
     }
 
@@ -58,15 +60,15 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
         <div className='message text-lg font-semibold'>
           {message}
           <br />
-{appState.model.modelType === 'date' && appState.calendar?.calendarDate && (
-  <p>
-    {new Date(appState.calendar.calendarDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })}
-  </p>
-)}
+          {appState.model.modelType === 'date' && appState.calendar?.calendarDate && (
+            <p>
+              {new Date(appState.calendar.calendarDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+          )}
 
         </div>
         {(appState.model.modelNeedInput) && (

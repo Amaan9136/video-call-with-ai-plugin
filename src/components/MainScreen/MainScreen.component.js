@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import MeetingFooter from "../MeetingFooter/MeetingFooter.component";
 import Participants from "../Participants/Participants.component";
 import "./MainScreen.css";
@@ -10,8 +10,9 @@ import Transcription from "../Transcription/Transcription";
 const MainScreen = (props) => {
   const participantRef = useRef(props.participants);
   const [meetingState, setMeetingState] = useState({
-    meetingInfo:false,
-    transcription:true,
+    meetingInfo: false,
+    transcription: true,
+    transcriptionMsg: '',
   });
   const onMicClick = (micEnabled) => {
     if (props.stream) {
@@ -47,7 +48,6 @@ const MainScreen = (props) => {
       audio: true,
       video: true,
     });
-
     localStream.getVideoTracks()[0].enabled = Object.values(
       props.currentUser
     )[0].video;
@@ -72,9 +72,7 @@ const MainScreen = (props) => {
     }
 
     mediaStream.getVideoTracks()[0].onended = onScreenShareEnd;
-
     updateStream(mediaStream);
-
     props.updateUser({ screen: true });
   };
 
@@ -86,7 +84,7 @@ const MainScreen = (props) => {
             <Participants />
             {meetingState.meetingInfo && <MeetingInfo setMeetingState={setMeetingState} name={props.name} />}
           </div>
-          {meetingState.transcription && <Transcription setMeetingState={setMeetingState}/>}
+          {meetingState.transcription && <Transcription setMeetingState={setMeetingState} transcriptionMsg={meetingState.transcriptionMsg}/>}
         </div>
         <div className="footer">
           <MeetingFooter

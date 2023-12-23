@@ -17,7 +17,10 @@ const MeetingInfo = ({ setMeetingState, name }) => {
           className="icon"
           icon={faTimes}
           onClick={() => {
-            setMeetingState(prevState => ({ ...prevState, MeetingInfo: false }));
+            setMeetingState(prevState => ({
+              ...prevState,
+              meetingInfo: !prevState.meetingInfo,
+            }));
           }}
         />
       </div>

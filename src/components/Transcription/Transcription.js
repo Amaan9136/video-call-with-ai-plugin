@@ -1,17 +1,12 @@
-import {
-  faTimes,
-  faUserFriends,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import "./Transcription.scss";
 
-const Transcription = ({ setMeetingState }) => {
-  const [transcriptionMsg, setTranscriptionMsg] = useState('');
-
+const Transcription = ({ setMeetingState, transcriptionMsg }) => {
   const startRecognition = () => {
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = 'en-US';
+    recognition.lang = ['en-US', 'en-GB']; 
     recognition.continuous = true;
     recognition.interimResults = true;
 
@@ -20,13 +15,14 @@ const Transcription = ({ setMeetingState }) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          const transcript = event.results[i][0].transcript;
-          setTranscriptionMsg(prevTranscriptionMsg => prevTranscriptionMsg + transcript + '...');
-        }
-        else {
+          setMeetingState(prev => ({
+            ...prev,
+            transcriptionMsg: prev.transcriptionMsg + transcript + '.',
+          }));
+        } else {
           interimTranscript += transcript;
         }
-        localStorage.setItem('transcript', transcriptionMsg);
+        // can use transcription msg to send anywhere 
       }
     };
 
@@ -46,16 +42,17 @@ const Transcription = ({ setMeetingState }) => {
     startRecognition();
   }, []);
 
-  const toggleTranscription = () => {
+  const toggleTranscription = useCallback(() => {
     setMeetingState(prev => ({
       ...prev,
       transcription: !prev.transcription,
+      transcriptionMsg: prev.transcriptionMsg,
     }));
-  };
+  }, [setMeetingState]);
 
   return (
     <>
-      <div className={`messenger-container from-left mx-2 my-3 rounded-md `}>
+      <div className={`messenger-container from-left mx-2 my-3 rounded-md`}>
         <div className="border-b-2 pb-3 border-black sticky top-0 bg-white">
           <div className="messenger-header text-2xl">
             <p>Transcription</p>

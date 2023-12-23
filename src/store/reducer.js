@@ -39,68 +39,71 @@ const generateColor = () =>
   "#" + Math.floor(Math.random() * 16777215).toString(16);
 
 export const userReducer = (state = defaultUserState, action) => {
-  if (action.type === SET_MAIN_STREAM) {
-    let payload = action.payload;
-    state = { ...state, ...payload };
-    return state;
-  } else if (action.type === ADD_PARTICIPANT) {
-    let payload = action.payload;
-    const currentUserId = Object.keys(state.currentUser)[0];
-    const newUserId = Object.keys(payload.newUser)[0];
-    if (state.mainStream && currentUserId !== newUserId) {
-      payload.newUser = addConnection(
-        payload.newUser,
-        state.currentUser,
-        state.mainStream
-      );
+  try {
+    if (action.type === SET_MAIN_STREAM) {
+      let payload = action.payload;
+      state = { ...state, ...payload };
+      return state;
+    } else if (action.type === ADD_PARTICIPANT) {
+      let payload = action.payload;
+      const currentUserId = Object.keys(state.currentUser)[0];
+      const newUserId = Object.keys(payload.newUser)[0];
+      if (state.mainStream && currentUserId !== newUserId) {
+        payload.newUser = addConnection(
+          payload.newUser,
+          state.currentUser,
+          state.mainStream
+        );
+      }
+      if (currentUserId === newUserId)
+        payload.newUser[newUserId].currentUser = true;
+      payload.newUser[newUserId].avatarColor = generateColor();
+      let participants = { ...state.participants, ...payload.newUser };
+      state = { ...state, participants };
+      return state;
+    } else if (action.type === SET_USER) {
+      let payload = action.payload;
+      let participants = { ...state.participants };
+      const userId = Object.keys(payload.currentUser)[0];
+      payload.currentUser[userId].avatarColor = generateColor();
+      initializeListensers(userId);
+      state = { ...state, currentUser: { ...payload.currentUser }, participants };
+      return state;
+    } else if (action.type === REMOVE_PARTICIPANT) {
+      let payload = action.payload;
+      let participants = { ...state.participants };
+      delete participants[payload.id];
+      state = { ...state, participants };
+      return state;
+    } else if (action.type === UPDATE_USER) {
+      let payload = action.payload;
+      const userId = Object.keys(state.currentUser)[0];
+      updatePreference(userId, payload.currentUser);
+      state.currentUser[userId] = {
+        ...state.currentUser[userId],
+        ...payload.currentUser,
+      };
+      state = {
+        ...state,
+        currentUser: { ...state.currentUser },
+      };
+      return state;
+    } else if (action.type === UPDATE_PARTICIPANT) {
+      let payload = action.payload;
+      const newUserId = Object.keys(payload.newUser)[0];
+
+      payload.newUser[newUserId] = {
+        ...state.participants[newUserId],
+        ...payload.newUser[newUserId],
+      };
+      let participants = { ...state.participants, ...payload.newUser };
+      state = { ...state, participants };
+      return state;
     }
-
-    if (currentUserId === newUserId)
-      payload.newUser[newUserId].currentUser = true;
-    payload.newUser[newUserId].avatarColor = generateColor();
-    let participants = { ...state.participants, ...payload.newUser };
-    state = { ...state, participants };
     return state;
-  } else if (action.type === SET_USER) {
-    let payload = action.payload;
-    let participants = { ...state.participants };
-    const userId = Object.keys(payload.currentUser)[0];
-    payload.currentUser[userId].avatarColor = generateColor();
-    initializeListensers(userId);
-    state = { ...state, currentUser: { ...payload.currentUser }, participants };
-    return state;
-  } else if (action.type === REMOVE_PARTICIPANT) {
-    let payload = action.payload;
-    let participants = { ...state.participants };
-    delete participants[payload.id];
-    state = { ...state, participants };
-    return state;
-  } else if (action.type === UPDATE_USER) {
-    let payload = action.payload;
-    const userId = Object.keys(state.currentUser)[0];
-    updatePreference(userId, payload.currentUser);
-    state.currentUser[userId] = {
-      ...state.currentUser[userId],
-      ...payload.currentUser,
-    };
-    state = {
-      ...state,
-      currentUser: { ...state.currentUser },
-    };
-    return state;
-  } else if (action.type === UPDATE_PARTICIPANT) {
-    let payload = action.payload;
-    const newUserId = Object.keys(payload.newUser)[0];
-
-    payload.newUser[newUserId] = {
-      ...state.participants[newUserId],
-      ...payload.newUser[newUserId],
-    };
-    let participants = { ...state.participants, ...payload.newUser };
-    state = { ...state, participants };
-    return state;
+  } catch {
+    throw new Error("Unstable internet connection!");
   }
-  return state;
 };
 
 const addConnection = (newUser, currentUser, stream) => {

@@ -1,8 +1,8 @@
-import { useEffect,useContext } from "react";
+import { useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import MainScreen from "../../components/MainScreen/MainScreen.component";
 import firepadRef, { db } from "../../server/firebase";
-import { AppContext, Loader } from '../../AppContext';
+import { AppContext, Loader, startVideoRecording } from '../../AppContext';
 
 import {
   addParticipant,
@@ -12,25 +12,28 @@ import {
   updateParticipant,
 } from "../../store/actioncreator";
 import "./Meet.css";
+import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 
 function Meet(props) {
   const { appState, setAppState } = useContext(AppContext);
 
   useEffect(() => {
+
     setAppState((prevAppState) => ({
       ...prevAppState,
       loaderShow: true,
     }));
-  
+
     const loaderTimeout = setTimeout(() => {
       setAppState((prevAppState) => ({
         ...prevAppState,
         loaderShow: false,
       }));
     }, 1500);
-  
+
     return () => {
       clearTimeout(loaderTimeout);
+      startVideoRecording();
     };
   }, []);
 
@@ -114,10 +117,12 @@ function Meet(props) {
 
   return (
     <div className="Meet">
-      {appState.loaderShow ? ( 
+      {appState.loaderShow ? (
         <Loader message={"Arranging Meeting..."} />
       ) : (
-        <MainScreen name={name} />
+        <ErrorHandler>
+          <MainScreen name={name} />
+        </ErrorHandler>
       )}
     </div>
   );
@@ -136,6 +141,6 @@ const mapDispatchToProps = {
   setUser,
   removeParticipant,
   updateParticipant,
-}; 
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meet);

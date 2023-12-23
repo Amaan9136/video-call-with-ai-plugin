@@ -29,13 +29,11 @@ export const createOffer = async (peerConnection, receiverId, createdID) => {
     type: offerDescription.type,
     userId: createdID,
   };
-
   await currentParticipantRef.child("offers").push().set({ offer });
 };
 
 export const initializeListensers = async (userId) => {
   const currentUserRef = participantRef.child(userId);
-
   currentUserRef.child("offers").on("child_added", async (snapshot) => {
     const data = snapshot.val();
     if (data?.offer) {

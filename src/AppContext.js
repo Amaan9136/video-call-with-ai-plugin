@@ -1,9 +1,11 @@
+// get firebase ref from app context and use the same ref everywhere
+
 import { createContext, useState } from 'react';
 import { SyncLoader } from 'react-spinners';
 
 export const AppContext = createContext({
   appState: false,
-  setAppState: () => {},
+  setAppState: () => { },
 });
 
 export const Loader = ({ message = "Loading..." }) => (
@@ -15,9 +17,63 @@ export const Loader = ({ message = "Loading..." }) => (
   </>
 );
 
-export function handleSendMail(setAppState, message, title) {
-    console.log(message);
+export const downloadVideo = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/download-video?key=ScreenRecord', {
+      method: 'GET'
+    });
 
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.mp4';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else {
+      console.error('Failed to download video:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error downloading video:', error);
+  }
+};
+
+
+export const startVideoRecording = async () => {
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/start-video`, {
+      method: 'GET'
+    });
+    if (response.ok) {
+      console.log('Video recording started successfully');
+    } else {
+      console.error('Failed to start video recording:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('Error starting video recording:', error);
+  }
+};
+
+
+export const stopVideoRecording = async () => {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/stop-video", {
+      method: 'GET'
+    });
+    if (response.ok) {
+      console.log('Video recording stopped successfully');
+    } else {
+      console.error('Failed to stop video recording:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('Error stopping video recording:', error);
+  }
+};
+
+export function handleSendMail(setAppState, title, message) {
   fetch('http://127.0.0.1:5000/send-mail', {
     method: 'POST',
     headers: {
@@ -31,7 +87,7 @@ export function handleSendMail(setAppState, message, title) {
         ...prevState,
         loaderShow: false,
         model: {
-          ...prevState.model, 
+          ...prevState.model,
           showModel: true,
           modelNeedInput: false,
           modelMsg: data,
@@ -57,8 +113,9 @@ export default function AppContextProvider({ children }) {
       showCalendar: false,
       calendarDate: '',
     },
+    showChatbot: false,
   });
-  
+
   const AppContextValues = {
     appState,
     setAppState,

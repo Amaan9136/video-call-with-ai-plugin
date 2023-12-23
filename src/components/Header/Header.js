@@ -8,6 +8,7 @@ import {
 import './Header.scss';
 
 export default function Header({ children, handleCalendar }) {
+
   return (
     <>
       <div className="header">

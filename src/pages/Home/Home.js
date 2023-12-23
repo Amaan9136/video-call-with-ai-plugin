@@ -5,14 +5,17 @@ import { faVideo, faKeyboard, faChain } from "@fortawesome/free-solid-svg-icons"
 import "./Home.scss";
 import firepadRef from '../../server/firebase';
 import Model from '../../components/Model/Model';
-import { AppContext, Loader } from '../../AppContext';
+import { AppContext, Loader , startVideoRecording} from '../../AppContext';
 import Calendar from 'react-calendar';
 
-export default function Input({ setUserName }) {
+// home to start recording
+// meeting footer to stop recording
+
+export default function Home({ setUserName }) {
   const inputRef = useRef(null);
   const joinRef = useRef(null);
   const { appState, setAppState } = useContext(AppContext);
-  
+
   function handleCalendar() {
     setAppState({
       ...appState,
@@ -21,10 +24,10 @@ export default function Input({ setUserName }) {
         showCalendar: !appState.calendar.showCalendar,
       },
     });
-  }
-  
+  }  
+
   const handleCalendarChange = (selectedDate) => {
-    const dateString = selectedDate.toISOString(); 
+    const dateString = selectedDate.toISOString();
     localStorage.setItem('selectedDate', selectedDate);
     setAppState({
       ...appState,
@@ -35,12 +38,12 @@ export default function Input({ setUserName }) {
       loaderShow: false,
       model: {
         showModel: true,
-        modelType:'date',
+        modelType: 'date',
         modelMsg: "Date Set Successfully!"
       }
     });
   };
-  
+
   const handleNewMeeting = () => {
     const name = inputRef.current.value.trim();
     const joinValue = joinRef.current.value.trim();
@@ -70,11 +73,12 @@ export default function Input({ setUserName }) {
           showModel: true,
           modelNeedInput: true,
           modelType: 'check-email',
-          modelMsg: "Would you like to send a meeting reminder via email? If yes, please provide the title of the email."
+          modelMsg: "Would you like to send a meeting reminder via email? If yes, please provide the description of the email."
         }
       });
       setUserName(name);
     }
+    // startVideoRecording();
   };
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -134,13 +138,13 @@ export default function Input({ setUserName }) {
         )
       )}
       <div className="flex justify-center p-3">
-      {appState.calendar.showCalendar && (
-  <Calendar
-    className='react-calendar'
-    onChange={handleCalendarChange}
-    value={appState.calendar.calendarDate || new Date()}
-  />
-)}
+        {appState.calendar && appState.calendar.showCalendar && (
+          <Calendar
+            className='react-calendar'
+            onChange={handleCalendarChange}
+            value={appState.calendar.calendarDate || new Date()}
+          />
+        )}
       </div>
       <div className="home-page">
         <Header handleCalendar={handleCalendar}>
