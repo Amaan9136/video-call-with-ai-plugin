@@ -24,7 +24,29 @@
 <!-- Prerequisites -->
 
 ## Usage
+<!-- install dependencies -->
+# FontAwesome
+npm install --save @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
 
+# XLSX for Excel file handling
+npm install --save xlsx
+
+# React Router
+npm install --save react-router-dom
+
+# React Redux
+npm install --save react-redux redux
+
+# React Tooltip
+npm install --save react-tooltip
+
+# React Calendar
+npm install --save react-calendar
+
+# Firebase
+npm install --save firebase
+
+<!-- run below commands -->
 - Run npm install.
 - Add your firebase config details to Server/firebase.js.
 - Run "npm run start" to start the app.

@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AppContext, Loader, handleSendMail, downloadVideo} from '../../AppContext';
+import { AppContext, Loader } from '../../AppContext';
+import { handleSendMail, downloadVideo } from '../../server/http';
 import './Summary.css';
 import Chatbot from '../../components/Chatbot/Chatbot';
+import Model from '../../components/Model/Model';
 
 export default function Summary() {
   const { appState, setAppState } = useContext(AppContext);
@@ -49,51 +51,45 @@ export default function Summary() {
 
   return (
     <>
+      {appState.model.showModel && (
+        <Model />
+      )}
       {appState.loaderShow ? (
-        <Loader message={"Heading to the Summary Page. Hold tight, we're almost there!"} />
+        <Loader message="Heading to the Summary Page. Hold tight, we're almost there!" />
       ) : (
-        <>
-          <div className='summary flex flex-col justify-center items-center h-screen'>
-            <div ref={messageRef} className='p-10 rounded-xl bg-white text-black max-w-[400px] overflow-y-auto'>
-              <h1 className='text-3xl font-semibold mb-4'>Summary:</h1>
-              {data.keyPoints.length !== 0 && (
-                <div className='mb-3 border-2 p-3 border-black'>
-                  <h1 className="text-lg font-semibold mb-1">Key Points Discussed:</h1>
-                  <ul>
-                    {data.keyPoints.map((point, index) => (
-                      <li className='' key={index}>{point}</li>
-                    ))}
-                    <li>Addressing potential ambiguities in process implementations.</li>
-                    <li>Project lead providing clarity.</li>
-                    <li>Discussion on legal considerations for specific project activities.</li>
-                    <li>Preventing complications later in the project timeline.</li>
-                    <li>Testing a car on city roads as an example.</li>
-                    <li>Addressing legal aspects during the kickoff meeting to avoid unplanned delays in project implementation.</li>
-                  </ul>
-                </div>
-              )}
-              {data.transcribe && <div className='mb-3 border-2 p-3 border-black'>
-                <h1 className="text-lg font-semibold mb-1">Transcribed Data:</h1>
-                {data.transcribe}
-              </div>}
-
-              <div className='mb-3 border-2 p-3 border-black'>
-                <h1 className="text-lg font-semibold mb-1">Brief Description:</h1>
-                A key focus of the kickoff meeting is addressing potential ambiguities in process implementations, with the project lead providing clarity. Legal considerations, such as permissions for specific project activities, are discussed to prevent complications later in the project timeline. For instance, issues like testing a car on city roads may arise, and addressing these legal aspects during the kickoff meeting helps avoid unplanned delays in project implementation.
+        <div className="flex flex-col justify-center items-center min-h-screen text-xl">
+          <div ref={messageRef} className="p-10 rounded-xl max-w-screen-xl">
+            <h1 className="text-5xl font-semibold mb-3 border-b-2 pb-3">Summary:</h1>
+            {data.keyPoints.length !== 0 && (
+              <div className="mb-3 border-b-2 pb-3">
+                <h1 className="text-3xl text-lg font-semibold mb-1">Key Points Discussed:</h1>
+                <ul>
+                  {data.keyPoints.map((point, index) => (
+                    <li className="list-disc ml-5" key={index}>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
+            )}
+            {data.transcribe && (
+              <div className="mb-3 border-b-2 pb-3 border-gray-300">
+                <h1 className="text-3xl text-lg font-semibold mb-1">Transcribed Data:</h1>
+                {data.transcribe}
+              </div>
+            )}
+            <div className="mb-3 border-b-2 pb-3">
+              <h1 className="text-3xl text-lg font-semibold mb-1">Brief Description:</h1>
+              A key focus of the kickoff meeting is addressing potential ambiguities in process implementations, with the project lead providing clarity. Legal considerations, such as permissions for specific project activities, are discussed to prevent complications later in the project timeline. For instance, issues like testing a car on city roads may arise, and addressing these legal aspects during the kickoff meeting helps avoid unplanned delays in project implementation.
             </div>
-            <div className='flex gap-5 mt-3'>
-              <button className='btn '
-                onClick={() => {
-                  const emailContent = messageRef.current.innerHTML;
-                  handleSendMail(setAppState, "The Meeting Was Ended", emailContent);
-                }}>Send Email</button>
-              <button className='btn'
-                onClick={downloadVideo}>Download Session Video</button>
+            <div className="flex gap-5 mt-3">
+              <button className="btn" onClick={() => { handleSendMail(setAppState, "The Meeting Was Ended", messageRef.current.innerHTML); }}>Send Summary as Email</button>
+              <button className="btn" onClick={() => { downloadVideo(setAppState); }}>Download Session Video</button>
+              <button className="btn" onClick={() => { setAppState(prevState => ({ ...prevState, showChatbot: !prevState.showChatbot })); }}>{appState.showChatbot ? 'Close' : 'Open'} Chatbot</button>
             </div>
           </div>
-          <Chatbot />
-        </>
+          {appState.showChatbot && <Chatbot />}
+        </div>
       )}
     </>
   );

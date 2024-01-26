@@ -2,7 +2,8 @@ import { useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import MainScreen from "../../components/MainScreen/MainScreen.component";
 import firepadRef, { db } from "../../server/firebase";
-import { AppContext, Loader, startVideoRecording } from '../../AppContext';
+import { AppContext, Loader } from '../../AppContext';
+import { startVideoRecording } from '../../server/http';
 
 import {
   addParticipant,
@@ -15,15 +16,12 @@ import "./Meet.css";
 import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 
 function Meet(props) {
-  const { appState, setAppState } = useContext(AppContext);
-
+  const { appState, setAppState, setHostDetails, hostDetails } = useContext(AppContext);
   useEffect(() => {
-
     setAppState((prevAppState) => ({
       ...prevAppState,
       loaderShow: true,
     }));
-
     const loaderTimeout = setTimeout(() => {
       setAppState((prevAppState) => ({
         ...prevAppState,
@@ -33,7 +31,6 @@ function Meet(props) {
 
     return () => {
       clearTimeout(loaderTimeout);
-      startVideoRecording();
     };
   }, []);
 
@@ -43,22 +40,24 @@ function Meet(props) {
       audio: true,
       video: true,
     });
-
     return localStream;
   };
 
   useEffect(() => {
     let isSubscribed = true;
-
     const fetchData = async () => {
       try {
         const stream = await getUserStream();
         if (isSubscribed) {
           stream.getVideoTracks()[0].enabled = false;
           setMainStream(stream);
-
           const connectedRef = db.database().ref(".info/connected");
           const participantRef = firepadRef.child("participants");
+          const snapshot = await participantRef.once("value");
+          const participantsArray = Object.values(snapshot.val() || {});
+          const isHostUndefined = participantsArray.some(participant => participant.isHost);
+          const hostRef = firepadRef.child("host");
+          const hostSnapshot = await hostRef.once("value");
 
           connectedRef.on("value", (snap) => {
             if (snap.val()) {
@@ -70,14 +69,36 @@ function Meet(props) {
               const userStatusRef = participantRef.push({
                 userName: name,
                 preferences: defaultPreference,
+                isHost: !isHostUndefined,
               });
               setUser({
                 [userStatusRef.key]: { name, ...defaultPreference },
               });
+              
+              if (!isHostUndefined) {
+                // !isHostUndefined means - it is HOST, set the host's data
+                const hostStatusRef = firepadRef.child("host").push({
+                  id: userStatusRef.key,
+                  userName: name,
+                });
+                console.log('hostStatusRef',hostStatusRef.key);
+                setHostDetails({ id: userStatusRef.key, name, isHost: !isHostUndefined });
+                hostStatusRef.onDisconnect().remove();
+              }else{  
+                // this is NOT HOST, gets the host data
+                const dbHostDataArray = Object.values(hostSnapshot.val() || {});
+                const dbHostData = dbHostDataArray[0];
+                console.log('dbHostData', dbHostData);
+                if (dbHostData) {
+                  setHostDetails({
+                    id: dbHostData.id,
+                    name: dbHostData.userName,
+                  });
+                }
+              }
               userStatusRef.onDisconnect().remove();
             }
           });
-
           participantRef.on("child_added", (snap) => {
             const preferenceUpdateEvent = participantRef.child(snap.key).child("preferences");
             preferenceUpdateEvent.on("child_changed", (preferenceSnap) => {
@@ -87,7 +108,6 @@ function Meet(props) {
                 },
               });
             });
-
             const { userName: name, preferences = {} } = snap.val();
             addParticipant({
               [snap.key]: {
@@ -96,11 +116,9 @@ function Meet(props) {
               },
             });
           });
-
           participantRef.on("child_removed", (snap) => {
             removeParticipant(snap.key);
           });
-
           window.history.replaceState(null, "Meet", "?id=" + firepadRef.key);
         }
       } catch (error) {
@@ -109,20 +127,22 @@ function Meet(props) {
     };
 
     fetchData();
-
     return () => {
       isSubscribed = false;
     };
   }, [name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant]);
 
+  useEffect(() => {
+    startVideoRecording();
+  }, []);
   return (
     <div className="Meet">
       {appState.loaderShow ? (
         <Loader message={"Arranging Meeting..."} />
       ) : (
-        <ErrorHandler>
+        // <ErrorHandler>
           <MainScreen name={name} />
-        </ErrorHandler>
+        /* </ErrorHandler> */
       )}
     </div>
   );

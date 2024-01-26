@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useRef } from 'react';
 import Header from '../../components/Header/Header';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo, faKeyboard, faChain } from "@fortawesome/free-solid-svg-icons";
-import "./Home.scss";
+import "./Home.css";
 import firepadRef from '../../server/firebase';
 import Model from '../../components/Model/Model';
-import { AppContext, Loader , startVideoRecording} from '../../AppContext';
+import { AppContext, Loader, startVideoRecording } from '../../AppContext';
 import Calendar from 'react-calendar';
 
 // home to start recording
@@ -14,8 +14,7 @@ import Calendar from 'react-calendar';
 export default function Home({ setUserName }) {
   const inputRef = useRef(null);
   const joinRef = useRef(null);
-  const { appState, setAppState } = useContext(AppContext);
-
+  const { appState, setAppState, hostDetails } = useContext(AppContext);
   function handleCalendar() {
     setAppState({
       ...appState,
@@ -24,7 +23,7 @@ export default function Home({ setUserName }) {
         showCalendar: !appState.calendar.showCalendar,
       },
     });
-  }  
+  }
 
   const handleCalendarChange = (selectedDate) => {
     const dateString = selectedDate.toISOString();
@@ -131,11 +130,15 @@ export default function Home({ setUserName }) {
       {appState.loaderShow && <Loader message={"Getting Info..."} />}
       {(appState.model.showModel && appState.model.modelNeedInput) ? (
         // model for joiner
-        <Model message={appState.model.modelMsg} setUserName={setUserName} />
+        <Model setUserName={setUserName} />
       ) : (
         appState.model.showModel && (
-          <Model message={appState.model.modelMsg} />
+          <Model />
         )
+      )}
+      {appState.model.showModel && hostDetails.isHost && (
+        // send email if host
+        <Model />
       )}
       <div className="flex justify-center p-3">
         {appState.calendar && appState.calendar.showCalendar && (
@@ -147,38 +150,56 @@ export default function Home({ setUserName }) {
         )}
       </div>
       <div className="home-page">
-        <Header handleCalendar={handleCalendar}>
-          <div className="action-btn">
-            <div className="input-block">
-              <div className="input-section">
-                <FontAwesomeIcon className="icon-block" icon={faKeyboard} />
-                <input
-                  ref={inputRef}
-                  placeholder="Enter Name to Host"
-                />
+        <Header handleCalendar={handleCalendar} />
+        <div className="body">
+          <div className="left-side">
+            <div className="content mr-10">
+              <h2>Premium video meetings. Now free for everyone.</h2>
+              <p>
+                We re-engineered the service we built for secure business
+                meetings, WeXpert Meet, to make it free and available for all.
+              </p>
+              <div className="action-btn">
+                <div className="input-block">
+                  <div className="input-section">
+                    <FontAwesomeIcon className="icon-block" icon={faKeyboard} />
+                    <input
+                      ref={inputRef}
+                      placeholder="Enter Name to Host"
+                    />
+                  </div>
+                </div>
+                <button className="btn" onClick={handleNewMeeting}>
+                  <FontAwesomeIcon className="icon-block" icon={faVideo} />
+                  New Meeting
+                </button>
+              </div>
+              <div className="action-btn">
+                <div className="input-block">
+                  <div className="input-section">
+                    <FontAwesomeIcon className="icon-block" icon={faKeyboard} />
+                    <input
+                      ref={joinRef}
+                      placeholder="Enter a code or link"
+                    />
+                  </div>
+                </div>
+                <button className="btn" onClick={handleJoinClick}>
+                  <FontAwesomeIcon className="icon-block" icon={faChain} />
+                  Join Meeting
+                </button>
               </div>
             </div>
-            <button className="btn" onClick={handleNewMeeting}>
-              <FontAwesomeIcon className="icon-block" icon={faVideo} />
-              New Meeting
-            </button>
-          </div>
-          <div className="action-btn">
-            <div className="input-block">
-              <div className="input-section">
-                <FontAwesomeIcon className="icon-block" icon={faKeyboard} />
-                <input
-                  ref={joinRef}
-                  placeholder="Enter a code or link"
-                />
-              </div>
+            <div className="help-text">
+              <a href="">Learn more</a> about WeXpert-Meet
             </div>
-            <button className="btn" onClick={handleJoinClick}>
-              <FontAwesomeIcon className="icon-block" icon={faChain} />
-              Join Meeting
-            </button>
           </div>
-        </Header>
+          <div className="right-side">
+            <div className="content">
+              <img src={process.env.PUBLIC_URL + '/assets/meetImg.jpg'} alt="Meet" />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

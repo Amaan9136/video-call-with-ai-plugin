@@ -1,8 +1,9 @@
 import React, { useContext, useRef } from 'react';
 import './Model.css';
-import { AppContext, handleSendMail } from '../../AppContext';
+import { AppContext } from '../../AppContext';
+import { handleSendMail } from '../../server/http';
 
-export default function Model({ message, setUserName, setKeyPoints, keyPoints }) {
+export default function Model({ setUserName, setKeyPoints, keyPoints }) {
   const { appState, setAppState } = useContext(AppContext);
   const inputRef = useRef()
   const handleConfirm = () => {
@@ -37,17 +38,15 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
 <div style="color: blue;">
   <p>Dear Attendee,</p>
   <p>The meeting has commenced. Your presence is required.</p>
-  <p style="color: red;">Host's Message🤵: ${inputRef.current.value}</p>
+  <p style="color: red;">Description: ${inputRef.current.value}</p>
   <p>Please click the link below to join the meeting:</p>
   <p><a href="${meetingLink}">${meetingLink}</a></p>
 </div>
 `;
-
       // changes made to show model
       handleSendMail(setAppState, emailTitle, emailBody);
       setAppState({ ...appState, model: { ...appState.model, showModel: false } });
     }
-
   };
 
   const handleCancel = () => {
@@ -56,9 +55,9 @@ export default function Model({ message, setUserName, setKeyPoints, keyPoints })
 
   return (
     <div className="transparent-background">
-      <div className="model-box from-top bg-gray-800 rounded-lg shadow-md px-8 py-3 font-semibold">
+      <div className="max-w-2xl from-top bg-gray-800 rounded-lg shadow-md px-8 py-3 font-semibold">
         <div className='message text-lg font-semibold'>
-          {message}
+          {appState.model.modelMsg}
           <br />
           {appState.model.modelType === 'date' && appState.calendar?.calendarDate && (
             <p>

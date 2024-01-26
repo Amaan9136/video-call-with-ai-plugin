@@ -1,12 +1,15 @@
 import { faTimes, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useEffect } from "react";
-import "./Transcription.scss";
+import { useCallback, useContext, useEffect } from "react";
+import "./Transcription.css";
+import { AppContext, Loader, startVideoRecording } from '../../AppContext';
 
 const Transcription = ({ setMeetingState, transcriptionMsg }) => {
+  const { appState, setAppState, hostDetails } = useContext(AppContext);
+
   const startRecognition = () => {
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = ['en-US', 'en-GB']; 
+    recognition.lang = ['en-US', 'en-GB'];
     recognition.continuous = true;
     recognition.interimResults = true;
 
@@ -71,6 +74,9 @@ const Transcription = ({ setMeetingState, transcriptionMsg }) => {
         </div>
 
         <div className="transcript-section pl-7 pr-3 text-left font-medium">
+
+          {/* {hostDetails.isHost ? <p style={{ alignItems: 'center' }}>Host: {hostDetails.name}</p> : <p style={{ alignItems: 'center' }}>this not NOT host, Host: {hostDetails.name}</p>} */}
+
           {transcriptionMsg || (
             <p className="animate-pulse infinite">Talk to display transcription...</p>
           )}

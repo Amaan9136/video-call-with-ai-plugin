@@ -1,0 +1,28 @@
+participants:
+{
+    "-Np32M6Pp1V4CGwHJYjb": {
+        "isHost": true,
+        "preferences": {
+            "audio": true,
+            "screen": false,
+            "video": false
+        },
+        "userName": "AMK"
+    },
+    "-Np32RRxSxtSXHe0Nhk8": {
+        "isHost": true,
+        "preferences": {
+            "audio": true,
+            "screen": false,
+            "video": false
+        },
+        "userName": "Amaan"
+    }
+}
+
+
+1. run:  vercel 
+🔍  Inspect: https://vercel.com/amaan9136s-projects/react-video-meet/CXzFAecWqGTHyKUWKudcoQqzasQv [1s]
+✅  Preview: https://react-video-meet-o0umqax5x-amaan9136s-projects.vercel.app [1s]
+📝  To deploy to production (react-video-meet.vercel.app), run `vercel --prod
+2. run:  vercel --prod`

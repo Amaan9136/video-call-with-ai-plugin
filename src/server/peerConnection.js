@@ -6,7 +6,7 @@ const participantRef = firepadRef.child("participants");
 export const updatePreference = (userId, preference) => {
   const currentParticipantRef = participantRef
     .child(userId)
-    .child("preferences");
+    .child("preferences")
   setTimeout(() => {
     currentParticipantRef.update(preference);
   });

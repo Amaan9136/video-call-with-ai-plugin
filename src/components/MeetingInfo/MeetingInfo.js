@@ -5,7 +5,7 @@ import {
   faUser,
   faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import "./MeetingInfo.scss";
+import "./MeetingInfo.css";
 
 const MeetingInfo = ({ setMeetingState, name }) => {
   const url = window.location.href;

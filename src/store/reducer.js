@@ -101,8 +101,9 @@ export const userReducer = (state = defaultUserState, action) => {
       return state;
     }
     return state;
-  } catch {
-    throw new Error("Unstable internet connection!");
+  } catch (error) {
+    console.log(error);
+    // throw new Error("Unstable internet connection!");
   }
 };
 

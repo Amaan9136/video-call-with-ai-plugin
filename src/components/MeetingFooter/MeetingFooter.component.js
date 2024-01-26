@@ -20,7 +20,8 @@ import "./MeetingFooter.css";
 import { Link } from "react-router-dom";
 import Model from "../Model/Model";
 import { useContext } from 'react';
-import { AppContext, stopVideoRecording } from '../../AppContext';
+import { AppContext } from '../../AppContext';
+import { stopVideoRecording } from '../../server/http';
 import Chatbot from "../Chatbot/Chatbot";
 
 const MeetingFooter = (props) => {
@@ -32,15 +33,6 @@ const MeetingFooter = (props) => {
     video: false,
     screen: false,
   });
-
-
-  const handleChatbot = () => {
-    setAppState(prevState => ({
-      ...prevState,
-      showChatbot: !prevState.showChatbot
-    }));
-  };
-  
 
   const micClick = () => {
     setStreamState((currentState) => {
@@ -73,25 +65,25 @@ const MeetingFooter = (props) => {
     });
   };
 
-const onScreenshotClick = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/screen-shot');
-    if (!response.ok) {
-      throw new Error(`Failed to capture screenshot: ${response.status} ${response.statusText}`);
+  const onScreenshotClick = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/screen-shot');
+      if (!response.ok) {
+        throw new Error(`Failed to capture screenshot: ${response.status} ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'screenshot.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error capturing screenshot:', error.message);
     }
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'screenshot.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Error capturing screenshot:', error.message);
-  }
-};
+  };
 
   function onKeyClick() {
     setAppState({
@@ -115,11 +107,10 @@ const onScreenshotClick = async () => {
 
   return (
     <>
-  <ReactTooltip id="tooltip" effect="solid" />
+      <ReactTooltip id="tooltip" effect="solid" />
       {appState.showChatbot && <Chatbot />}
       {appState.model.showModel && (
         <Model
-          message={appState.model.modelMsg}
           setKeyPoints={setKeyPoints}
           keyPoints={keyPoints}
           inputRef={inputRef}
@@ -144,14 +135,14 @@ const onScreenshotClick = async () => {
         </div>
         <div className="meeting-icons" onClick={onScreenshotClick}
           title="Take Screenshot"
-          >
+        >
           <FontAwesomeIcon icon={faCamera} />
         </div>
-        <Link to='summary'>
-          <div className="meeting-icons active"
-          title="End Call"
+        <Link to='summary'
           onClick={stopVideoRecording}
-          >
+        >
+          <div className="meeting-icons active"
+            title="End Call">
             <FontAwesomeIcon icon={faPhone} />
           </div>
         </Link>
@@ -204,13 +195,18 @@ const onScreenshotClick = async () => {
           )}
         </div>
         <div className="meeting-icons" onClick={onKeyClick}
-        title="Key Points">
+          title="Key Points">
           <FontAwesomeIcon icon={faKey} />
         </div>
         <div
           className={`meeting-icons ${appState.showChatbot ? "" : "active"}`}
           title="Chatbot"
-          onClick={handleChatbot}
+          onClick={()=>{
+            setAppState(prevState => ({
+              ...prevState,
+              showChatbot: !prevState.showChatbot
+            }));
+          }}
         >
           {appState.showChatbot ? (
             <FontAwesomeIcon icon={faMessage} />

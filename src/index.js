@@ -26,13 +26,13 @@ const Root = () => (
   <Router>
     <Provider store={store}>
       <AppContextProvider>
-          <Suspense fallback={<Loader />}>
-            <Routes>
-              {routes.map(({ path, component: Component }) => (
-                <Route key={path} path={path} element={<Component />} />
-              ))}
-            </Routes>
-          </Suspense>
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            {routes.map(({ path, component: Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          </Routes>
+        </Suspense>
       </AppContextProvider>
     </Provider>
   </Router>
