@@ -2,8 +2,9 @@ import { useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import MainScreen from "../../components/MainScreen/MainScreen.component";
 import firepadRef, { db } from "../../server/firebase";
-import { AppContext, Loader } from '../../AppContext';
-import { startVideoRecording } from '../../server/http';
+import { AppContext } from '../../AppContext';
+import Loader from '../../AppLoader';
+// import { startVideoRecording } from '../../server/http';
 
 import {
   addParticipant,
@@ -13,10 +14,10 @@ import {
   updateParticipant,
 } from "../../store/actioncreator";
 import "./Meet.css";
-import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
+// import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 
 function Meet(props) {
-  const { appState, setAppState, setHostDetails, hostDetails } = useContext(AppContext);
+  const { appState, setAppState, setHostDetails } = useContext(AppContext);
   useEffect(() => {
     setAppState((prevAppState) => ({
       ...prevAppState,
@@ -32,7 +33,7 @@ function Meet(props) {
     return () => {
       clearTimeout(loaderTimeout);
     };
-  }, []);
+  }, [setAppState]);
 
   const { name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant } = props;
   const getUserStream = async () => {
@@ -51,7 +52,7 @@ function Meet(props) {
         if (isSubscribed) {
           stream.getVideoTracks()[0].enabled = false;
           setMainStream(stream);
-          const connectedRef = db.database().ref(".info/connected");
+          const connectedRef = await db.database().ref(".info/connected");
           const participantRef = firepadRef.child("participants");
           const snapshot = await participantRef.once("value");
           const participantsArray = Object.values(snapshot.val() || {});
@@ -81,14 +82,12 @@ function Meet(props) {
                   id: userStatusRef.key,
                   userName: name,
                 });
-                console.log('hostStatusRef',hostStatusRef.key);
                 setHostDetails({ id: userStatusRef.key, name, isHost: !isHostUndefined });
                 hostStatusRef.onDisconnect().remove();
               }else{  
                 // this is NOT HOST, gets the host data
                 const dbHostDataArray = Object.values(hostSnapshot.val() || {});
                 const dbHostData = dbHostDataArray[0];
-                console.log('dbHostData', dbHostData);
                 if (dbHostData) {
                   setHostDetails({
                     id: dbHostData.id,
@@ -130,11 +129,12 @@ function Meet(props) {
     return () => {
       isSubscribed = false;
     };
-  }, [name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant]);
+  }, [name, setMainStream, setUser, addParticipant, removeParticipant, updateParticipant , setHostDetails]);
 
-  useEffect(() => {
-    startVideoRecording();
-  }, []);
+  // useEffect(() => {
+  //   startVideoRecording();
+  // }, []);
+  
   return (
     <div className="Meet">
       {appState.loaderShow ? (
@@ -150,8 +150,8 @@ function Meet(props) {
 
 const mapStateToProps = (state) => {
   return {
-    stream: state.mainStream,
-    user: state.currentUser,
+    stream: state && state.mainStream ? state.mainStream : null,
+    user: state && state.currentUser ? state.currentUser : null,
   };
 };
 

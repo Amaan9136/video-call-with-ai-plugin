@@ -1,12 +1,11 @@
 import { faTimes, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import "./Transcription.css";
-import { AppContext, Loader, startVideoRecording } from '../../AppContext';
+import { AppContext } from '../../AppContext';
 
-const Transcription = ({ setMeetingState, transcriptionMsg }) => {
-  const { appState, setAppState, hostDetails } = useContext(AppContext);
-
+const Transcription = ({ setMeetingState }) => {
+  const { appData, setAppData } = useContext(AppContext);
   const startRecognition = () => {
     const recognition = new window.webkitSpeechRecognition();
     recognition.lang = ['en-US', 'en-GB'];
@@ -14,18 +13,14 @@ const Transcription = ({ setMeetingState, transcriptionMsg }) => {
     recognition.interimResults = true;
 
     recognition.onresult = (event) => {
-      let interimTranscript = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          setMeetingState(prev => ({
+          setAppData(prev => ({
             ...prev,
             transcriptionMsg: prev.transcriptionMsg + transcript + '.',
           }));
-        } else {
-          interimTranscript += transcript;
-        }
-        // can use transcription msg to send anywhere 
+        } 
       }
     };
 
@@ -43,15 +38,19 @@ const Transcription = ({ setMeetingState, transcriptionMsg }) => {
 
   useEffect(() => {
     startRecognition();
-  }, []);
+  }, [startRecognition]);
 
-  const toggleTranscription = useCallback(() => {
-    setMeetingState(prev => ({
+  function toggleTranscription() {
+    setMeetingState((prev) => ({
       ...prev,
-      transcription: !prev.transcription,
+      showTranscripts: !prev.showTranscripts,
+    }));
+
+    setAppData(prev => ({
+      ...prev,
       transcriptionMsg: prev.transcriptionMsg,
     }));
-  }, [setMeetingState]);
+  }
 
   return (
     <>
@@ -77,7 +76,7 @@ const Transcription = ({ setMeetingState, transcriptionMsg }) => {
 
           {/* {hostDetails.isHost ? <p style={{ alignItems: 'center' }}>Host: {hostDetails.name}</p> : <p style={{ alignItems: 'center' }}>this not NOT host, Host: {hostDetails.name}</p>} */}
 
-          {transcriptionMsg || (
+          {appData.transcriptionMsg || (
             <p className="animate-pulse infinite">Talk to display transcription...</p>
           )}
         </div>

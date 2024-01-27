@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMicrophone,
@@ -17,22 +17,25 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import "./MeetingFooter.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Model from "../Model/Model";
 import { useContext } from 'react';
 import { AppContext } from '../../AppContext';
-import { stopVideoRecording } from '../../server/http';
-import Chatbot from "../Chatbot/Chatbot";
+// import { stopVideoRecording } from '../../server/http';
 
 const MeetingFooter = (props) => {
   const { appState, setAppState } = useContext(AppContext);
-  const inputRef = useRef();
-  const [keyPoints, setKeyPoints] = useState([]);
+  const navigate = useNavigate();
   const [streamState, setStreamState] = useState({
     mic: true,
     video: false,
     screen: false,
   });
+
+  const handleEndCall = () => {
+    // stopVideoRecording();
+    navigate('/summary');
+  };
 
   const micClick = () => {
     setStreamState((currentState) => {
@@ -108,13 +111,8 @@ const MeetingFooter = (props) => {
   return (
     <>
       <ReactTooltip id="tooltip" effect="solid" />
-      {appState.showChatbot && <Chatbot />}
       {appState.model.showModel && (
-        <Model
-          setKeyPoints={setKeyPoints}
-          keyPoints={keyPoints}
-          inputRef={inputRef}
-        />
+        <Model />
       )}
       <div className="meeting-footer border-t">
         <div
@@ -138,14 +136,6 @@ const MeetingFooter = (props) => {
         >
           <FontAwesomeIcon icon={faCamera} />
         </div>
-        <Link to='summary'
-          onClick={stopVideoRecording}
-        >
-          <div className="meeting-icons active"
-            title="End Call">
-            <FontAwesomeIcon icon={faPhone} />
-          </div>
-        </Link>
         <div
           className="meeting-icons"
           title="Share Screen"
@@ -153,6 +143,10 @@ const MeetingFooter = (props) => {
           disabled={streamState.screen}
         >
           <FontAwesomeIcon icon={faDesktop} />
+        </div>
+        <div className="meeting-icons active" onClick={handleEndCall}
+          title="End Call">
+          <FontAwesomeIcon icon={faPhone} />
         </div>
         <div
           className={`meeting-icons ${props.meetingState.meetingInfo ? "" : "active"}`}
@@ -169,16 +163,16 @@ const MeetingFooter = (props) => {
           />
         </div>
         <div
-          className={`meeting-icons ${props.meetingState.transcription ? "" : "active"}`}
+          className={`meeting-icons ${props.meetingState.showTranscripts ? "" : "active"}`}
           title="Transcription"
           onClick={() =>
             props.setMeetingState((prev) => ({
               ...prev,
-              transcription: !prev.transcription,
+              showTranscripts: !prev.showTranscripts,
             }))
           }
         >
-          {props.meetingState.transcription ? (
+          {props.meetingState.showTranscripts ? (
             <FontAwesomeIcon icon={faAlignLeft} />
           ) : (
             <>
@@ -201,7 +195,7 @@ const MeetingFooter = (props) => {
         <div
           className={`meeting-icons ${appState.showChatbot ? "" : "active"}`}
           title="Chatbot"
-          onClick={()=>{
+          onClick={() => {
             setAppState(prevState => ({
               ...prevState,
               showChatbot: !prevState.showChatbot
@@ -224,7 +218,7 @@ const MeetingFooter = (props) => {
             </>
           )}
         </div>
-      </div>
+      </div >
     </>
   );
 };

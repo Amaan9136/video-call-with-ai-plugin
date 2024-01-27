@@ -15,7 +15,7 @@ export const Participant = (props) => {
   } = props;
   if (!currentParticipant) return <></>;
   return (
-<div className={`participant ${hideVideo ? "hide" : ""} border`}>
+    <div className={`participant ${hideVideo ? "hide" : ""} border`}>
       <Card>
         <video
           ref={videoRef}

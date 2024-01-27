@@ -1,11 +1,11 @@
 import React, { useContext, useRef } from 'react';
-import './Model.css';
 import { AppContext } from '../../AppContext';
 import { handleSendMail } from '../../server/http';
+import './Model.css';
 
-export default function Model({ setUserName, setKeyPoints, keyPoints }) {
-  const { appState, setAppState } = useContext(AppContext);
-  const inputRef = useRef()
+export default function Model({ setUserName }) {
+  const { appState, setAppState, appData, setAppData } = useContext(AppContext);
+  const inputRef = useRef();
   const handleConfirm = () => {
     if (appState.model.modelType === 'join') {
       // set username for joiner
@@ -28,11 +28,14 @@ export default function Model({ setUserName, setKeyPoints, keyPoints }) {
     } else if (appState.model.modelType === 'keys') {
       // to add key points
       const keyPointsValue = inputRef.current.value.trim();
-      setKeyPoints((prevKeyPoints) => [...prevKeyPoints, keyPointsValue]);
-      localStorage.setItem('keyPoints', JSON.stringify([...keyPoints, keyPointsValue]));
+      if (keyPointsValue) {
+        inputRef.current.value = '';
+        const capitalizedValue = keyPointsValue.charAt(0).toUpperCase() + keyPointsValue.slice(1);
+        setAppData((prev) => ({ ...prev, keyPoints: [...prev.keyPoints, capitalizedValue] }));
+      }
+      
     } else if (appState.model.modelType === 'check-email') {
       const meetingLink = window.location.href;
-
       const emailTitle = 'Join the Meeting Now!';
       const emailBody = `
 <div style="color: blue;">
@@ -94,11 +97,15 @@ export default function Model({ setUserName, setKeyPoints, keyPoints }) {
             </button>
           )}
         </div>
-        {setKeyPoints && keyPoints.length !== 0 && appState.model.modelType === 'keys' && (
-          <div className='max-w-[15rem]'>
+        {appData.keyPoints.length !== 0 && appState.model.modelType === 'keys' && (
+          <>
             <h1 className="text-lg font-semibold mb-1">Key Points Added:</h1>
-            {keyPoints.join(', ')}
-          </div>
+            <ul className="list-disc ml-5">
+              {appData.keyPoints.map((value, index) => (
+                <li key={'keyPoints' + index}>{value}</li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
     </div>

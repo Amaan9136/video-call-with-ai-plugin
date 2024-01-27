@@ -6,13 +6,15 @@ import { connect } from "react-redux";
 import { setMainStream, updateUser } from "../../store/actioncreator";
 import MeetingInfo from "../MeetingInfo/MeetingInfo";
 import Transcription from "../Transcription/Transcription";
+import { AppContext } from '../../AppContext';
+import Chatbot from "../Chatbot/Chatbot";
 
 const MainScreen = (props) => {
+  const { appState } = useContext(AppContext);
   const participantRef = useRef(props.participants);
   const [meetingState, setMeetingState] = useState({
     meetingInfo: false,
-    transcription: true,
-    transcriptionMsg: '',
+    showTranscripts: true
   });
   const onMicClick = (micEnabled) => {
     if (props.stream) {
@@ -84,8 +86,9 @@ const MainScreen = (props) => {
             <Participants />
             {meetingState.meetingInfo && <MeetingInfo setMeetingState={setMeetingState} name={props.name} />}
           </div>
-          {meetingState.transcription && <Transcription setMeetingState={setMeetingState} transcriptionMsg={meetingState.transcriptionMsg}/>}
+          {meetingState.showTranscripts && <Transcription setMeetingState={setMeetingState} />}
         </div>
+        {appState.showChatbot && <Chatbot />}
         <div className="footer">
           <MeetingFooter
             onScreenClick={onScreenClick}

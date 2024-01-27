@@ -5,8 +5,10 @@ import { faVideo, faKeyboard, faChain } from "@fortawesome/free-solid-svg-icons"
 import "./Home.css";
 import firepadRef from '../../server/firebase';
 import Model from '../../components/Model/Model';
-import { AppContext, Loader, startVideoRecording } from '../../AppContext';
+import { AppContext, /* startVideoRecording */ } from '../../AppContext';
+import Loader from '../../AppLoader';
 import Calendar from 'react-calendar';
+import { Link } from 'react-router-dom';
 
 // home to start recording
 // meeting footer to stop recording
@@ -191,7 +193,7 @@ export default function Home({ setUserName }) {
               </div>
             </div>
             <div className="help-text">
-              <a href="">Learn more</a> about WeXpert-Meet
+              <Link to="/">Learn more</Link> about WeXpert-Meet
             </div>
           </div>
           <div className="right-side">

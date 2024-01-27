@@ -109,7 +109,8 @@ export default function Chatbot() {
           </span>
         ))}
       </div>
-      <div className="allquickbtn ml-5 mt-1">
+    <div className="chat-footer">
+    <div className="allquickbtn">
         <button
           tabIndex="1"
           className="quickmessage"
@@ -128,7 +129,7 @@ export default function Chatbot() {
         </button>
         <button
           tabIndex="3"
-          className="quickmessage col-span-2"
+          className="quickmessage"
           onClick={() => handleInputSend("Time Table ⌛")}
           disabled={isAnyMessageAnimating}
         >
@@ -136,7 +137,7 @@ export default function Chatbot() {
         </button>
         <button
           tabIndex="4"
-          className="quickmessage col-span-2"
+          className="quickmessage"
           onClick={() => handleInputSend("Holidays? 🎅")}
           disabled={isAnyMessageAnimating}
         >
@@ -147,8 +148,7 @@ export default function Chatbot() {
         <div className="w-full flex">
           <input
             ref={inputRef}
-            className="flex-1 bg-gray-700 rounded-[1rem] ml-[0.4rem] py-2 text-white"
-            style={{ padding: "0.6rem", paddingLeft: '1rem' }}
+            className="flex-1 bg-gray-700 rounded-[1rem] ml-1 pl-4 text-white"
             type="text"
             placeholder="Type a message..."
             autoFocus="autofocus"
@@ -169,6 +169,7 @@ export default function Chatbot() {
           </div>
         </button>
       </div>
+    </div>
     </div>
   );
 }

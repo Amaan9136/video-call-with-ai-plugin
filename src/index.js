@@ -6,7 +6,8 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { userReducer } from "./store/reducer";
-import AppContextProvider, { Loader } from "./AppContext";
+import AppContextProvider from "./AppContext";
+import Loader from './AppLoader';
 import reportWebVitals from "./reportWebVitals";
 
 export const store = createStore(userReducer);
